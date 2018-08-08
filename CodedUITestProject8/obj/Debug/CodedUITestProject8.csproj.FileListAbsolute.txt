@@ -1,0 +1,9 @@
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\bin\Debug\CodedUITestProject8.dll
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\bin\Debug\CodedUITestProject8.pdb
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\obj\Debug\CodedUITestProject8.csprojAssemblyReference.cache
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\obj\Debug\CodedUITestProject8.csproj.CoreCompileInputs.cache
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\obj\Debug\CodedUITestProject8.dll
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\obj\Debug\CodedUITestProject8.pdb
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\bin\Debug\Win32Interop.WinHandles.dll
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\bin\Debug\Win32Interop.WinHandles.xml
+C:\Users\Alex.Lundberg\source\repos\CodedUITestProject8\CodedUITestProject8\obj\Debug\CodedUITestProject8.csproj.CopyComplete

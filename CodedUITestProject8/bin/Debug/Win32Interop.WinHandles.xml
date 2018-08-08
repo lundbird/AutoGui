@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Win32Interop.WinHandles</name>
+    </assembly>
+    <members>
+        <member name="T:Win32Interop.WinHandles.WindowHandle">
+            <summary>
+             Small wrapper class to allow extension methods specific to Win32 windows.
+            </summary>
+        </member>
+        <member name="M:Win32Interop.WinHandles.WindowHandle.#ctor(System.IntPtr)">
+            <summary> Constructor. </summary>
+            <param name="rawPtr"> A raw IntPtr to the Win32 handle. </param>
+        </member>
+        <member name="P:Win32Interop.WinHandles.WindowHandle.Invalid">
+            <summary> Represents an invalid window handle. </summary>
+        </member>
+        <member name="P:Win32Interop.WinHandles.WindowHandle.RawPtr">
+            <summary> A raw IntPtr to the Win32 handle. </summary>
+        </member>
+        <member name="P:Win32Interop.WinHandles.WindowHandle.IsValid">
+            <summary> True if the handle represents a valid Win32 handle. </summary>
+        </member>
+        <member name="T:Win32Interop.WinHandles.Internal.NativeMethods">
+            <summary> Win32 methods. </summary>
+        </member>
+        <member name="T:Win32Interop.WinHandles.WindowHandleExtensions">
+            <summary> Extension methods for <see cref="T:Win32Interop.WinHandles.WindowHandle"/> </summary>
+        </member>
+        <member name="M:Win32Interop.WinHandles.WindowHandleExtensions.IsVisible(Win32Interop.WinHandles.WindowHandle)">
+            <summary> Check if the given window handle is currently visible. </summary>
+            <param name="windowHandle"> The window to act on. </param>
+            <returns> true if the window is visible, false if not. </returns>
+        </member>
+        <member name="M:Win32Interop.WinHandles.WindowHandleExtensions.GetClassName(Win32Interop.WinHandles.WindowHandle)">
+            <summary> Gets the Win32 class name of the given window. </summary>
+            <param name="windowHandle"> The window handle to act on. </param>
+            <returns> The class name of the passed in window. </returns>
+        </member>
+        <member name="M:Win32Interop.WinHandles.WindowHandleExtensions.GetWindowText(Win32Interop.WinHandles.WindowHandle)">
+            <summary> Gets the text associated with the given window handle. </summary>
+            <param name="windowHandle"> The window handle to act on. </param>
+            <returns> The window text. </returns>
+        </member>
+        <member name="T:Win32Interop.WinHandles.TopLevelWindowUtils">
+            <summary>
+             Utilities for operating on windows that are top-level on the screen.
+            </summary>
+        </member>
+        <member name="M:Win32Interop.WinHandles.TopLevelWindowUtils.GetForegroundWindow">
+            <summary> Gets the WindowHandle to the current foreground window. </summary>
+            <returns> The foreground window. </returns>
+        </member>
+        <member name="M:Win32Interop.WinHandles.TopLevelWindowUtils.FindWindows(System.Predicate{Win32Interop.WinHandles.WindowHandle})">
+            <summary> Finds all the windows that match the given predicate. </summary>
+            <exception cref="T:System.ArgumentNullException"> Thrown when one or more required
+             arguments are null. </exception>
+            <param name="windowPredicate"> A predicate which determines if the given
+             window should be included in the collection returned. </param>
+            <returns> A collection of windows that passed the predicate. </returns>
+        </member>
+        <member name="M:Win32Interop.WinHandles.TopLevelWindowUtils.FindWindow(System.Predicate{Win32Interop.WinHandles.WindowHandle})">
+            <summary>
+             Searches for the first window that matches the predicate.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"> Thrown when one or more required
+             arguments are null. </exception>
+            <param name="callback"> The search criteria for the window.  Return true
+             when the window has been found. </param>
+            <returns>
+             The window handle for which callback() returned true, or
+             <see cref="P:Win32Interop.WinHandles.WindowHandle.Invalid"/> if callback() never returned true.
+            </returns>
+        </member>
+    </members>
+</doc>
