@@ -1,0 +1,17 @@
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\ConsoleApp1.exe.config
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\ConsoleApp1.exe
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\ConsoleApp1.pdb
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\obj\Debug\ConsoleApp1.csprojAssemblyReference.cache
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CoreCompileInputs.cache
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\obj\Debug\ConsoleApp1.exe
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\obj\Debug\ConsoleApp1.pdb
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\GUILibrary.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\UiaComWrapper.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\Microsoft.VisualStudio.TestTools.UITesting.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\Interop.UIAutomationClient.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\Microsoft.VisualStudio.TestTools.UITest.Extension.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\Microsoft.VisualStudio.TestTools.UITest.Common.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\Microsoft.VisualStudio.TestTools.UITest.ExtensionUtilities.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\Microsoft.VisualStudio.OLE.Interop.dll
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\bin\Debug\GUILibrary.pdb
+C:\Users\Alex.Lundberg\SimpleGUI\src\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CopyComplete

@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.VisualStudio.QualityTools.WindowsStore.CodedUITestFramework</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute">
+            <summary>
+            Used to activate the extension so that we recognize a class as 
+            Unit Test extension class.
+            Use [CodedUITest] attribute in test class to indicate that it is a Coded UI Test
+            </summary>
+            <summary>
+            Used to activate the extension so that we recognize a class as 
+            Unit Test extension class.
+            Use [CodedUITest] attribute in test class to indicate that it is a Coded UI Test
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute.#ctor(Microsoft.VisualStudio.TestTools.UITesting.CodedUITestType)">
+            <summary>
+            CodedUITestAttribute constructor that takes CodedUITestType.
+            </summary>
+            <param name="codedUITestType">The CodedUITestType.</param>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute.ExtensionId">
+            <summary>
+            Unique Id of the extension.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute.GetExecution">
+            <summary>
+            Implements some events on the Unit Test Execution.
+            </summary>
+            <returns>CodedUITestExtensionExecution that implements various event handlers</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute.GetClientSide">
+            <summary>
+            TestTypeExtensionClientSide
+            </summary>
+            <returns>CodedUITestExtensionClientSide</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute.#ctor">
+            <summary>
+            Constructor of CodedUITestAttribute. It should be used at class level for a Coded UI Test class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionClientSide">
+            <summary>
+            Extends TestTypeExtensionClientSide, used by Unit Test TIP 
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionClientSide.ExtensionName">
+            <summary>
+            Name of the Test Type, which appears in Property Grid
+            for a Coded UI Test.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionClientSide.GetUI">
+            <summary>
+            </summary>
+            <returns>null, we do not need this for CodedUITest</returns>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution">
+            <summary>
+            Extends TestExtensionExecution, and handles various events of TestRun
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution.sqmId">
+            <summary>
+            Id for sqm collection
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution.Initialize(Microsoft.VisualStudio.TestTools.UnitTesting.TestExecution)">
+            <summary>
+            Initializes Execution, adds required event handlers
+            </summary>
+            <param name="execution"></param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution.OnTestStopping(System.Object,Microsoft.VisualStudio.TestTools.UnitTesting.OnTestStoppingEventArgs)">
+            <summary>
+            This is eventhandler for thte TestStopping event that is raised when the CUIT is either aborting
+            or times out. If the playback is going on it is cancelled so that abort and cleanup can happen
+            gracefully.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution.CreateTestMethodInvoker(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodInvokerContext)">
+            <summary>
+            Get TestMethod invoker of CodedUITest
+            </summary>
+            <param name="context"></param>
+            <returns>ITestMethodInvoker that invokes TestMethod</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution.Dispose">
+            <summary>
+            Dispose method of CodedUITestExecution
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestExtensionExecution.ThrowIfPlatformNotSupported">
+            <summary>
+            Throws 
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestInvoker">
+            <summary>
+            Invoker decorator that invokes given TestMethod.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestInvoker.#ctor(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodInvokerContext)">
+            <summary>
+            Passed by UTA to entension's TestExtensionExecution.CreateMethodInvoker
+            </summary>
+            <param name="context">contains TestContext, TestMethod info</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestInvoker.Invoke(System.Object[])">
+            <summary>
+            Invokes test method and captures errors
+            Returns a string. CodedUITestResultsViewer
+            displays this in Coded UI Test section in the resuts viewer.
+            </summary>
+            <returns>String containing results</returns>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestServiceUtility">
+            <summary>
+            CodedUITestService utilities to be used both server and client side.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestServiceUtility.GetUITestFromXML(System.String)">
+            <summary>
+            Get UITest object from xml string.
+            </summary>
+            <param name="uiTestString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestServiceUtility.GetXMLOfUITest(Microsoft.VisualStudio.TestTools.UITest.Common.UITest)">
+            <summary>
+            Get xml string from UITest object.
+            </summary>
+            <param name="uiTest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.ICodedUITestService.GetUIMap">
+            <summary>
+            Get the existing UIMap.
+            </summary>
+            <returns>UIMap as xml string.</returns>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.ICodedUITestService.GetVSUISettings(System.Int32@,System.Byte[]@,System.Collections.Generic.Dictionary{System.String,System.String}@,System.String@,System.Double@,Microsoft.VisualStudio.Shell.Interop.IVsUIShell5@)">
+            <summary>
+            Get the various UI setting from visual studio.
+            </summary>
+            <param name="locale">Locale of the VS.</param>
+            <param name="vsIconData">Application icon data.</param>
+            <param name="brushes">Brushes to paint UI of CodedUITestBuilder. This is needed to match the VS look.</param>
+            <param name="environmentFont">Font available from Tools->Options->Font and color->EnrironmentFont.</param>
+            <param name="fontSize">Size of the font.</param>
+            <param name="shell">SVsUIShell for using shell apis</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.ICodedUITestService.ShowF1Help(System.String)">
+            <summary>
+            Show the VS help for CodedUITest. Called when user presses F1 in CodedUITestBuilderUI.
+            </summary>
+            <param name="context">The context for the help.</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.ICodedUITestService.SaveUIMap(System.String)">
+            <summary>
+            Save the UIMap.
+            </summary>
+            <param name="uiTest">Contains controls in map and validation statements.</param>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.ICodedUITestService.UIClosed">
+            <summary>
+            Called when the UI is closing itself.
+            </summary>
+        </member>
+        <member name="M:Microsoft.VisualStudio.TestTools.UITesting.ICodedUITestService.GetUITestFileName">
+            <summary>
+            Returns the path of the UITest File name which is getting edited in UITestBuilder.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.CodedUITestPackageLoadError">
+            <summary>
+              Looks up a localized string similar to Failed to load Coded UI Test Package..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.Iteration">
+            <summary>
+              Looks up a localized string similar to iteration.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.Process64BitError">
+            <summary>
+              Looks up a localized string similar to The Coded UITest cannot be run as a 64 bit process. You must change your test settings in the Hosts tab to run your test in a 32 bit process. For more information on creating test settings, see https://go.microsoft.com/fwlink/?LinkID=246440&amp;clcid=0x409..
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.ScreenShotFailure">
+            <summary>
+              Looks up a localized string similar to Failed to take screen shot: {0}.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.ScreenShotMessage">
+            <summary>
+              Looks up a localized string similar to Failure Screen Shot: {0}.
+            </summary>
+        </member>
+        <member name="P:Microsoft.VisualStudio.TestTools.UITesting.Resources.WinBlueRequired">
+            <summary>
+              Looks up a localized string similar to You cannot run Coded UI tests for Windows Store apps on this platform. For details on platform support, please refer to {0}..
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.AutoWaitCursor">
+            <summary>
+            This is a class to help display a busy cursor during long operations
+            that will automatically revert to a "normal" cursor when it's through.
+            </summary>
+        </member>
+        <member name="T:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestType">
+            <summary>
+            Represents the CodedUITest type for a test class.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestType.WindowsStore">
+            <summary>
+            CodedUITest type that represents testing of Windows Store Applications.
+            </summary>
+        </member>
+        <member name="F:Microsoft.VisualStudio.TestTools.UITesting.CodedUITestType.WindowsPhone">
+            <summary>
+            CodedUITest type that represents testing of Windows Phone Applications.
+            </summary>
+        </member>
+    </members>
+</doc>
