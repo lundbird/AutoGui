@@ -9,7 +9,8 @@ using Mouse = Microsoft.VisualStudio.TestTools.UITesting.Mouse;
 using System.Windows.Automation;
 using static System.Windows.Automation.AutomationElement;
 using System.Threading;
-using Win32Interop.WinHandles;
+using RGiesecke.DllExport;
+using System.Runtime.InteropServices;
 
 internal class GUILibrary
 {
@@ -27,7 +28,7 @@ internal class GUILibrary
 {"ToolTipOpenedEvent",ToolTipOpenedEvent},
 */
     //TODO get element by value
-    private Dictionary<string, AutomationProperty> propertyMap = new Dictionary<string, AutomationProperty>()
+    private static Dictionary<string, AutomationProperty> propertyMap = new Dictionary<string, AutomationProperty>()
     {
         {"AutomationId",AutomationIdProperty},
         {"Id",AutomationIdProperty},
@@ -79,14 +80,17 @@ internal class GUILibrary
         {"Orientation",OrientationProperty},
         {"RuntimeId",RuntimeIdProperty},
     };
+
     private AutomationElement activeWindow;
 
     public GUILibrary()
     {
     }
+
+    [DllExport("setWindow", CallingConvention = CallingConvention.Cdecl)]
     public void setWindow(string window)
     {
-        //finds the window by regulard expression
+        //finds the window by regular expression - NEEDS MORE TESTING.
         //var windowMatch = TopLevelWindowUtils.FindWindow(wh => wh.GetWindowText().Contains(window));
         //Condition apptitle = new PropertyCondition(NameProperty, windowMatch.GetWindowText());
 
@@ -96,9 +100,17 @@ internal class GUILibrary
         activeWindow.SetFocus();
         this.activeWindow = activeWindow;
     }
+
     private AutomationElement search(string selector, int child = 0)
     {
+        //if user chooses to search by value then we search by value only. This is to keep code simple
+        if (selector.Contains("value"))
+        {
+            return FindByValue(selector);
+        }
+
         List<PropertyCondition> conditionList = new List<PropertyCondition>();
+        Dictionary<string, string> valueParameter = new Dictionary<string, string>();
 
         Dictionary<AutomationProperty, string> searchParameters = ParseSelector(selector);
         foreach (KeyValuePair<AutomationProperty, string> entry in searchParameters)
@@ -106,11 +118,50 @@ internal class GUILibrary
             conditionList.Add(new PropertyCondition(entry.Key, entry.Value));
         }
 
-        PropertyCondition[] conditionsArray = conditionList.ToArray();
+        Condition[] conditionsArray = conditionList.ToArray();
         Condition searchConditions = new AndCondition(conditionsArray);
 
-        
         return activeWindow.FindAll(TreeScope.Descendants, searchConditions)[child];
+    }
+
+    /// <summary>
+    /// Helper method of search() that finds an element if the user wants to select by value. 
+    /// </summary>
+    /// <param name="selector"></param>
+    /// <returns>automation element if successfull</returns>
+    private AutomationElement FindByValue(string selector)
+    {
+
+        int firstIndex = selector.IndexOf(":")+1;
+        string  controlValue = selector.Substring(firstIndex, selector.Length - firstIndex);
+
+        // Use ControlViewCondition to retrieve all control elements.
+        AutomationElementCollection elementCollectionControl = activeWindow.FindAll(TreeScope.Subtree, Automation.ControlViewCondition);
+        foreach (AutomationElement autoElement in elementCollectionControl)
+        {
+            if (getElementText(autoElement) == controlValue)
+            {
+                return autoElement;
+            }
+        }
+        throw new ElementNotAvailableException("Could not find an element with value: " + controlValue);
+    }
+
+    private string getElementText(AutomationElement element)
+    {
+        object patternObj;
+        if (element.TryGetCurrentPattern(ValuePattern.Pattern, out patternObj))
+        {
+            var valuePattern = (ValuePattern)patternObj;
+            return valuePattern.Current.Value;
+        }
+        else if (element.TryGetCurrentPattern(TextPattern.Pattern, out patternObj))
+        {
+            var textPattern = (TextPattern)patternObj;
+            return textPattern.DocumentRange.GetText(-1).TrimEnd('\r'); // often there is an extra '\r' hanging off the end.
+        }
+
+        return null;
     }
 
     private Dictionary<AutomationProperty, string> ParseSelector(string selector)
@@ -141,7 +192,8 @@ internal class GUILibrary
     /// </summary>
     /// <param name="selector">expression to match a control.</param>
     /// <param name="child">Which child to choose if multiple controls are chosen</param>
-    ///--------------------------------------------------------------------
+    ///--------------------------------------------------
+    [DllExport("Click", CallingConvention = CallingConvention.Cdecl)]
     public void Click(string selector, int child = 0)
     {
         AutomationElement control = search(selector, child);
@@ -168,6 +220,7 @@ internal class GUILibrary
     /// <param name="selector">selector to find the text control</param>
     /// <param name="child">which child to choose if multiple controls are chosen</param>
     ///--------------------------------------------------------------------
+    [DllExport("Write", CallingConvention = CallingConvention.Cdecl)]
     public void Write(string value, string selector, int child = 0)
     {
         AutomationElement element = search(selector, child);  //finds the element to write to

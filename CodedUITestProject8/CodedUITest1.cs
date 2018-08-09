@@ -23,8 +23,8 @@ namespace CodedUITestProject8
         public void CodedUITestMethod1()
         {
             GUILibrary runner = new GUILibrary();
-            runner.setWindow("SC IntelliShell - Select Connection Mode");
-            runner.Click("CANCEL");
+            runner.setWindow("Untitled - Notepad");
+            runner.Write("test2","value:test1");
 
         }
     }
