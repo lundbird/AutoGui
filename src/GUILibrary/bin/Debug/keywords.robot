@@ -2,7 +2,7 @@
 Resource  Keywords.robot  #as this test suite expands put the keywords in a resource file
 Library  OperatingSystem
 Library  Process
-Library  GUILibraryPy
+Library  SimpleGUI
 
 ***Variables***
 ${LastAmps}=  800
@@ -41,19 +41,17 @@ Navigate to Setup>General>Fault Detection
     click  title:General,class:TextBlock 
     click  Fault Detection 
 On the "Phase Fault Detection Current Level (RMS Amps)" field, enter ${amps} and click the enter key
-    write  ${amps}  value:${LastAmps}
-    press  enter
-    Run Keyword If  ${amps}>0 and ${amps}<8400  Valid Input
+    write  ${amps}  class:TextBox
+    sendkey  {ENTER}
+    Run Keyword If  ${amps}>0 and ${amps}<=8400  Valid Input
     Run Keyword If  ${amps}<0 or ${amps}>8400  Invalid Input
-    ${LastAmps}=  Set Variable  ${amps}
-    Set Global Variable  ${LastAmps}
 Invalid Input
     click  OK
 Valid Input
     click  Validate
-    read  iaccessiblevalue:=Settings Validation Successful
+    click  value:Settings Validation Successful
     click  Apply
-    read  iaccessiblevalue:=Settings Applied Successfully
+    click  value:Settings Applied Successfully
 
 #Firmware Update from ILink6
 Click Tools>Firmware Update
