@@ -5,12 +5,15 @@ using System.Windows.Input;
 using System.Windows.Forms;
 using System.Drawing;
 using Keyboard = Microsoft.VisualStudio.TestTools.UITesting.Keyboard;
-using Mouse = Microsoft.VisualStudio.TestTools.UITesting.Mouse;
+using Microsoft.VisualStudio.TestTools.UITesting;
 using Microsoft.VisualStudio.TestTools.UITest;
 using System.Windows.Automation;
 using static System.Windows.Automation.AutomationElement;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UITest.Extension;
+using System.Runtime.InteropServices;
 
 namespace GUILibrary
 {
@@ -28,7 +31,16 @@ namespace GUILibrary
     {"StructureChangedEvent",StructureChangedEvent},
      {"ToolTipOpenedEvent",ToolTipOpenedEvent},
     */
-        //TODO get element by value
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
+        //Mouse actions
+        private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        private const int MOUSEEVENTF_LEFTUP = 0x04;
+        private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+        private const int MOUSEEVENTF_RIGHTUP = 0x10;
+
+        //Dictionary that converts from user parameters to automation property values
         private static Dictionary<string, AutomationProperty> propertyMap = new Dictionary<string, AutomationProperty>(StringComparer.InvariantCultureIgnoreCase)
     {
         {"AutomationId",AutomationIdProperty},
@@ -108,7 +120,7 @@ namespace GUILibrary
         private AutomationElement Search(string selector, int child = 0, double timeout=5)
         {
 
-            List<PropertyCondition> conditionList = new List<PropertyCondition>();
+            List<System.Windows.Automation.PropertyCondition> conditionList = new List<System.Windows.Automation.PropertyCondition>();
             Dictionary<string, string> valueParameter = new Dictionary<string, string>();
 
             //if user chooses to search by value then we search by value only. This is to keep code simple
@@ -120,11 +132,11 @@ namespace GUILibrary
             Dictionary<AutomationProperty, string> searchParameters = ParseSelector(selector);
             foreach (KeyValuePair<AutomationProperty, string> entry in searchParameters)
             {
-                conditionList.Add(new PropertyCondition(entry.Key, entry.Value));
+                conditionList.Add(new System.Windows.Automation.PropertyCondition(entry.Key, entry.Value));
             }
 
             Condition[] conditionsArray = conditionList.ToArray();
-            Condition searchConditions = new AndCondition(conditionsArray);
+            Condition searchConditions = new System.Windows.Automation.AndCondition(conditionsArray);
 
             return FindWithTimeout(selector, searchConditions, child, timeout);
 
@@ -224,7 +236,7 @@ namespace GUILibrary
 
                 AutomationProperty Automationprop = propertyMap[propWithValues[0]]; //map the string name to the AutomationProperty
                 selectorDict.Add(Automationprop, propWithValues[1]);
-                System.Diagnostics.Debug.WriteLine(propWithValues[1]);
+                Console.WriteLine(propWithValues[1]);
             }
             return selectorDict;
         }
@@ -236,10 +248,10 @@ namespace GUILibrary
         /// <param name="selector">expression to match a control.</param>
         /// <param name="child">Which child to choose if multiple controls are chosen</param>
         ///--------------------------------------------------
-        public void Click(string selector, int child = 0)
+        public void Click(string selector, string mode = "Left", int child = 0)
         {
-            AutomationElement control = Search(selector, child);
 
+            AutomationElement control = Search(selector, child);
             var isInvokable = (bool)control.GetCurrentPropertyValue(IsInvokePatternAvailableProperty);
             if (isInvokable)
             {
@@ -248,12 +260,30 @@ namespace GUILibrary
             }
             else
             {
-                System.Drawing.Point p = control.GetClickablePoint(); //TODO add exception handling here.
-                System.Windows.Forms.Cursor.Position = new System.Drawing.Point((int)p.X, (int)p.Y);
-                Mouse.Click(MouseButtons.Left);
+                Point p = control.GetClickablePoint(); 
+                Cursor.Position = new Point((int)p.X, (int)p.Y);
+                uint X = (uint)Cursor.Position.X;
+                uint Y = (uint)Cursor.Position.Y;
+
+                if (String.Equals(mode, "left", StringComparison.OrdinalIgnoreCase))
+                {
+                    mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, X, Y, 0, 0);
+                }
+                else if (String.Equals(mode, "right", StringComparison.OrdinalIgnoreCase))
+                {
+                    mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, X, Y, 0, 0);
+                }
+                else
+                {
+                    throw new InvalidOperationException(mode + " Not a valid input for mouse click");
+                }
             }
         }
 
+        public void SendKey(string keys)
+        {
+            SendKeys.SendWait(keys);
+        }
 
         public void Append(string value,string selector,int child=0,string mode = "append")
         {
@@ -288,7 +318,7 @@ namespace GUILibrary
                 // Check #1: Is control enabled?
                 // An alternative to testing for static or read-only controls 
                 // is to filter using 
-                // PropertyCondition(AutomationElement.IsEnabledProperty, true) 
+                // System.Windows.Automation.PropertyCondition(AutomationElement.IsEnabledProperty, true) 
                 // and exclude all read-only text controls from the collection.
                 if (!element.Current.IsEnabled)
                 {

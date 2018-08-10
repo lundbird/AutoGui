@@ -14,8 +14,10 @@ namespace GUILibrary
         static void Main()
         {
             GUILibrary t = new GUILibrary();
-            t.setWindow("SG6801(#1) - S&C IntelliLink Setup Software [611.23]");
-            t.Click("title:Setup,class:TextBlock");
+            t.setWindow("Calculator");
+            t.Click("Eight");
+            t.Click("Seven");
+            t.Click("Four");
         }
 
     }
