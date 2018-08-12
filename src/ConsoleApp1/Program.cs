@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Test.Input;
 using static GUILibrary.GUILibraryClass;
 
     public class Class1
@@ -14,7 +13,7 @@ using static GUILibrary.GUILibraryClass;
         {
             setWindow("Calculator - Calculator");
             Click("Seven");
-        }
+        } 
 
     }
 
