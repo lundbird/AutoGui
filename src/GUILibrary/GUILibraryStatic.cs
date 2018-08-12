@@ -11,6 +11,9 @@ using System.Text.RegularExpressions;
 
 namespace GUILibrary
 {
+    //TODO. keep searching if there are child elements that are hidden by parents like in pluralsight course.
+    //TODO. Validate if actions on a control are succesfull.
+    //TODO. Unit testing :(
     /// <summary>
     /// Contains high level user functions for GUI Automation. User inputs what window they want to perform GUI automation using setWindow(selector). 
     /// Then the user can use methods such as Click(selector),Write(text, selector),or Read(selector) to perform actions on control elements
@@ -216,10 +219,18 @@ namespace GUILibrary
                 {
                 }
             }
+            searchTime.Stop();
 
             //in case we couldnt successfully get a value we throw an exception.
-            searchTime.Stop();
-            throw new ElementNotAvailableException("Cound not find element: " + selector + " in " + activeWindow + " in " + timeout + " seconds");
+            if (searchElement == null)
+            {
+                throw new ElementNotAvailableException("Cound not find element: " + selector + " in " + activeWindow + " in " + timeout + " seconds");
+            }
+            else
+            {
+                throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + activeWindow + " in " + timeout + " seconds");
+            }
+
         }
 
         /// <summary>
