@@ -150,7 +150,7 @@ namespace GUILibrary
         private static AutomationElement Search(string selector, int child = 0, double timeout=5)
         {
 
-            List<PropertyCondition> conditionList = new List<PropertyCondition>();  //contains the list of conditions that we will search with
+            List<Condition> conditionList = new List<Condition>();  //contains the list of conditions that we will search with
             Dictionary<string, string> valueParameter = new Dictionary<string, string>();  //used if the user does a search based on value
 
             //if user chooses to search by value then we search by value only. This is to keep code simple
@@ -166,6 +166,8 @@ namespace GUILibrary
             {
                 conditionList.Add(new PropertyCondition(entry.Key, entry.Value));
             }
+
+            conditionList.Add(Automation.ControlViewCondition);  //only view control elements
 
             Condition[] conditionsArray = conditionList.ToArray(); //needs to be converted to array to be fed to AutomationElement.FindAll()
             Condition searchConditions = new AndCondition(conditionsArray);
