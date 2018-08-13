@@ -11,8 +11,6 @@ using System.Text.RegularExpressions;
 
 namespace GUILibrary
 {
-    //TODO. keep searching if there are child elements that are hidden by parents like in pluralsight course.
-    //TODO. Validate if actions on a control are succesfull.
     //TODO. Unit testing :(
     /// <summary>
     /// Contains high level user functions for GUI Automation. User inputs what window they want to perform GUI automation using setWindow(selector). 
@@ -87,7 +85,7 @@ namespace GUILibrary
         /// <summary>
         /// User method that Reads the text from the control of interest
         /// </summary>
-        /// <param name="selector">AutomationElement for which to find the text of</param>        
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>      
         /// <param name="child">AutomationElement for which to find the text of</param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
         public static string Read(string selector, int child = 0, double timeout = 5)
@@ -100,9 +98,9 @@ namespace GUILibrary
         /// <summary>
         /// Validates the Input on any function that is open to the end user.
         /// </summary>
-        /// <param name="selector">users inputed selector. Validation is minimal and currently only checks for null input</param>        
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>   
         ///<param name="inputText">users inputed text for write methods</param>        
-        /// <param name="child">users entered child parameter</param>
+        /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">users entered timeout </param>    
         private static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
         {
@@ -114,7 +112,7 @@ namespace GUILibrary
             {
                 throw new ArgumentException("inputText cannot be null");
             }
-            if (child<0)
+            if (child<0 || child > 100)
             {
                 throw new ArgumentException("Invalid child number: " + child);
             }
@@ -127,7 +125,7 @@ namespace GUILibrary
         /// <summary>
         /// Helper method of Search that calls the AutomationElement.FindFirst or FindAll method which searches the tree for the matching element.
         /// </summary>
-        /// <param name="window">selector for the window to perform ui automtion actions on</param>
+        /// <param name="window">selector for the window to perform ui automation actions on</param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
         /// <returns>AutomationElement if succesfull </returns>
         public static void setWindow(string window,double timeout=5)
@@ -143,8 +141,8 @@ namespace GUILibrary
         /// <summary>                
         /// Performs the search of the element by adding conditions based on the parsed conditions then calling FindWithTimeout
         /// </summary>
-        /// <param name="selector">AutomationElement for which to find the text of</param>        
-        /// <param name="child">AutomationElement for which to find the text of</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>    
+        /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">time to search for the element before throwing an error</param>
         /// <returns>AutomationElement if succesfull </returns>
         private static AutomationElement Search(string selector, int child = 0, double timeout=5)
@@ -180,9 +178,9 @@ namespace GUILibrary
         /// Helper method of Search that calls the AutomationElement.FindFirst or FindAll method which searches the tree for the matching element.
         /// Uses a while loop with timeout to wait for element if it is not present or enabled.
         /// </summary>
-        /// <param name="selector">AutomationElement for which to find the text of</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <param name="searchCondition">AutomationElement for which to find the text of</param>
-        /// <param name="child">AutomationElement for which to find the text of</param>
+        /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">time to search for the element before throwing an error</param>   
         /// <returns>AutomationElement if succesfull </returns>
         private static AutomationElement FindWithTimeout(string selector, Condition searchConditions, int child = 0, double timeout = 5)
@@ -214,7 +212,7 @@ namespace GUILibrary
                     if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
                     {
                         searchTime.Stop();
-                        return searchElement;
+                        return CheckChildren(searchElement,searchConditions);
                     }
                 }
                 catch (NullReferenceException) //null reference is thrown each time Find() cannot find the element.
@@ -236,9 +234,38 @@ namespace GUILibrary
         }
 
         /// <summary>
+        /// Finds the innermost active element meeting the conditions of the search using recursion.
+        /// </summary>
+        /// <param name="searchCondition">search conditions to use in AutomationElement.FindFirst()</param>
+        /// <param name="activeParent">the current parent in the recursive search</param>   
+        /// <returns>the innermost active AutomationElement that meets the searchConditions.</returns>
+        private static AutomationElement CheckChildren(AutomationElement activeParent,Condition searchConditions)
+        {
+            AutomationElement searchElement = null;
+
+            try
+            {
+                searchElement = activeParent.FindFirst(TreeScope.Children, searchConditions); //only search in the direct children.
+            }
+            catch (NullReferenceException)
+            {
+            }
+
+            //no while loop necessary since the initial parent is loaded the GUI has been fully loaded.
+            if (searchElement != null && (bool) searchElement.GetCurrentPropertyValue(IsEnabledProperty))
+            {
+                return CheckChildren(searchElement,searchConditions);
+            }
+            else
+            {
+                return activeParent;
+            }
+        }
+
+        /// <summary>
         /// Helper method of search() that finds an element if the user wants to select by value. 
         /// </summary>
-        /// <param name="selector">property1:value1,property2:value2...</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <param name="timeout">time to search before timing out</param>
         /// <returns>automation element if successfull</returns>
         private static AutomationElement FindByValue(string selector,double timeout)
@@ -256,10 +283,11 @@ namespace GUILibrary
                     AutomationElementCollection elementCollectionControl = activeWindow.FindAll(TreeScope.Subtree, Automation.ControlViewCondition);
                     foreach (AutomationElement autoElement in elementCollectionControl)
                     {
-                        if (getElementText(autoElement) == controlValue) //we have to manually check each element to see if the elements value or text is what we want
+                        //we have to manually check each element to see if the elements value or text is what we want
+                        if (getElementText(autoElement) == controlValue && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty)) 
                         {
                             searchTime.Stop();
-                            return autoElement;
+                            return CheckChildren(Automation.ControlViewCondition,autoElement);
                         }
                     }
                 }catch (NullReferenceException) { }
@@ -271,7 +299,7 @@ namespace GUILibrary
 
 
         /// <summary>
-        /// Helper method of FindByValue() and Read() that returns the value or text of the element depending on which is presend
+        /// Helper method of FindByValue() and Read() that returns the value or text of the element depending on which is present
         /// </summary>
         /// <param name="element">AutomationElement for which to find the text of</param>
         private static string getElementText(AutomationElement element)
@@ -297,7 +325,7 @@ namespace GUILibrary
         /// <summary>
         /// Helper method of Search() that parses the users input string and matches it with the properties in propertyMap dictionary.
         /// </summary>
-        /// <param name="selector">user input selector string to parse</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <returns>Dictionary giving the AutomationProperty with the corresponding value</returns>
         private static Dictionary<AutomationProperty, string> ParseSelector(string selector)
         {
@@ -325,8 +353,8 @@ namespace GUILibrary
         /// <summary>
         /// Clicks on the control of interest.
         /// </summary>
-        /// <param name="selector">expression to match a control.</param>
-        /// <param name="child">Which child to choose if multiple controls are chosen</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
+        /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">time to search before timing out</param>
         ///--------------------------------------------------
         public static void Click(string selector, int child = 0,double timeout=5)
@@ -366,7 +394,7 @@ namespace GUILibrary
         /// <summary>
         /// Right Clicks the Control
         /// </summary>
-        /// <param name="selector">selector string to search for control. format is in </param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <param name="child">selector to find the text control</param>
         /// <param name="timeout">time to search before timing out</param>
         ///--------------------------------------------------------------------
@@ -388,7 +416,7 @@ namespace GUILibrary
         /// Appends string into each text control of interest.
         /// </summary>
         /// <param name="value">String to be inserted</param>
-        /// <param name="selector">selector to find the text control</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <param name="timeout">time to search before timing out</param>
         /// <param name="mode">whether or not to overwrite the text in the control</param>
         ///--------------------------------------------------------------------
@@ -403,7 +431,7 @@ namespace GUILibrary
         /// Inserts a string into each text control of interest.
         /// </summary>
         /// <param name="value">String to be inserted</param>
-        /// <param name="selector">selector to find the text control</param>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <param name="timeout">time to search before timing out</param>
         /// <param name="mode">whether or not to overwrite the text in the control</param>
         ///--------------------------------------------------------------------
