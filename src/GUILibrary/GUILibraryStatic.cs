@@ -135,7 +135,7 @@ namespace GUILibrary
             AutomationElement windowElement = Search(window, 0, timeout);
             windowElement.SetFocus();
             activeWindow = windowElement;
-            Debug.Write("active window was set to " + window);
+            Debug.WriteLine("active window was set to " + window);
         }
 
 
@@ -155,7 +155,7 @@ namespace GUILibrary
             //if user chooses to search by value then we search by value only. This is to keep code simple
             if (selector.Contains("value"))
             {
-                Debug.Write("Doing a search by value. Ignoring other conditions in input selector");
+                Debug.WriteLine("Doing a search by value. Ignoring other conditions in input selector");
                 return FindByValue(selector,timeout);
             }
 
@@ -167,7 +167,7 @@ namespace GUILibrary
                 conditionList.Add(new PropertyCondition(entry.Key, entry.Value));
             }
 
-            Debug.Write("Condition List contains: " + conditionList.ToString());
+            Debug.WriteLine("Condition List contains: " + conditionList.ToString());
 
             conditionList.Add(Automation.ControlViewCondition);  //only view control elements
 
@@ -193,11 +193,11 @@ namespace GUILibrary
 
             Stopwatch searchTime = new Stopwatch();
             searchTime.Start();
-            Debug.Write("begining the search for " + selector + " with child: " + child + "and timeout: " + timeout);
+            Debug.WriteLine("Begining the search for " + selector + " with child: " + child + "and timeout: " + timeout);
 
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                try
+                try         //try a search for the element
                 {
                     if (child == 0) //if the user chose to just search for the first element we can use the faster FindFirst rather than FindAll()
                     {
@@ -217,7 +217,7 @@ namespace GUILibrary
 
                     if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
                     {
-                        Debug.Write("AutomationElement was found");
+                        Debug.WriteLine("AutomationElement was found");
                         searchTime.Stop();
                         return CheckChildren(searchElement,searchConditions);
                     }
@@ -260,12 +260,12 @@ namespace GUILibrary
             //no while loop necessary since the initial parent is loaded the GUI has been fully loaded.
             if (searchElement != null && (bool) searchElement.GetCurrentPropertyValue(IsEnabledProperty))
             {
-                Debug.Write("A child element matching conditions was found. Doing another recursive search");
+                Debug.WriteLine("A child element matching conditions was found. Doing another recursive search");
                 return CheckChildren(searchElement,searchConditions);
             }
             else
             {
-                Debug.Write("A child element matching conditions was NOT found. Ending recursive search");
+                Debug.WriteLine("A child element matching conditions was NOT found. Ending recursive search");
                 return activeParent;
             }
         }
@@ -294,7 +294,7 @@ namespace GUILibrary
                         //we have to manually check each element to see if the elements value or text is what we want
                         if (getElementText(autoElement) == controlValue && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty)) 
                         {
-                            Debug.Write("Found the element using a search by value");
+                            Debug.WriteLine("Found the element using a search by value");
                             searchTime.Stop();
                             return CheckChildren(autoElement, Automation.ControlViewCondition);
                         }
@@ -320,13 +320,13 @@ namespace GUILibrary
             if (hasValue)
             {
                 ValuePattern valuePattern = (ValuePattern)element.GetCurrentPattern(ValuePattern.Pattern);
-                Debug.Write("element is a value pattern element");
+                Debug.WriteLine("element is a value pattern element");
                 return valuePattern.Current.Value;
             }
             else if (hasText)
             {
                 TextPattern textPattern = (TextPattern)element.GetCurrentPattern(ValuePattern.Pattern);
-                Debug.Write("element is a text pattern element");
+                Debug.WriteLine("element is a text pattern element");
                 return textPattern.DocumentRange.GetText(-1).TrimEnd('\r'); // often there is an extra '\r' hanging off the end.
             }
 
@@ -349,7 +349,7 @@ namespace GUILibrary
                 //if we cannot split the string then we assume that the user meant to use the name property
                 if (propWithValues.Length == 1)
                 {
-                    Debug.Write("User only entered one parameter for which to search, assuming text property");
+                    Debug.WriteLine("User only entered one parameter for which to search, assuming text property");
                     selectorDict.Add(NameProperty, propWithValues[0]);
                     return selectorDict;
                 }
@@ -379,14 +379,14 @@ namespace GUILibrary
             var isInvokable = (bool)control.GetCurrentPropertyValue(IsInvokePatternAvailableProperty);
             if (isInvokable)
             {
-                Debug.Write("the automation element was invokable. Now Clicking element");
+                Debug.WriteLine("the automation element was invokable. Now Clicking element");
                 var invokePattern = control.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
                 invokePattern.Invoke();
             }
             else
             {
                 //click manually by moving mouse and clicking left mouse button
-                Debug.Write("the automation element was NOT invokable. Manually moving mouse over and clicking");
+                Debug.WriteLine("the automation element was NOT invokable. Manually moving mouse over and clicking");
                 Point p = control.GetClickablePoint();
                 Mouse.MoveTo(p);
                 Mouse.Click(MouseButton.Left);
