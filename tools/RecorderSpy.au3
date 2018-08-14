@@ -436,17 +436,17 @@ Func WriteRobotScript($obj,$objParent)
 
 	;writes to both robot and python files
 	if $id <>'' Then
-		FileWrite($hFileOpen,@TAB & "click  " & "id:" & $id  & @CRLF)
-		FileWrite($pFileOpen, "sg.Click(" & '"' & "id:" & $id & '"' & ")" & @CRLF)
+		FileWrite($hFileOpen,@TAB & "click  " & "id:=" & $id  & @CRLF)
+		FileWrite($pFileOpen, "sg.Click(" & '"' & "id:=" & $id & '"' & ")" & @CRLF)
 	Elseif $title<>'' Then
 		FileWrite($hFileOpen,@TAB & "click  " & $title  & @CRLF)
 		FileWrite($pFileOpen,"sg.Click(" & '"' & $title  & '"' & ")" & @CRLF)
 	Elseif $accessibleValue<>'' Then
-		FileWrite($hFileOpen,@TAB & "click  " & "value:" & $accessibleValue & @CRLF)
-		FileWrite($pFileOpen,"sg.Click("& '"' & "value:" & $accessibleValue & '"' & ")" & @CRLF)
+		FileWrite($hFileOpen,@TAB & "click  " & "value:=" & $accessibleValue & @CRLF)
+		FileWrite($pFileOpen,"sg.Click("& '"' & "value:=" & $accessibleValue & '"' & ")" & @CRLF)
 	Else
-		FileWrite($hFileOpen,@TAB & "click  " & "class:" & $class & @CRLF)
-		FileWrite($pFileOpen,"sg.Click(" & '"' & "class:" & $class & '"' &")" & @CRLF)
+		FileWrite($hFileOpen,@TAB & "click  " & "class:=" & $class & @CRLF)
+		FileWrite($pFileOpen,"sg.Click(" & '"' & "class:=" & $class & '"' &")" & @CRLF)
 	EndIf
 
 	FileClose($hFileOpen)

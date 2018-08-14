@@ -217,8 +217,8 @@ namespace GUILibrary
                     {
                         Debug.WriteLine("AutomationElement was found");
                         searchTime.Stop();
-                        //    return CheckChildren(searchElement,searchConditions);
-                        return searchElement;
+                        return CheckChildren(searchElement,searchConditions);
+                        //return searchElement;
                     }
                 }
                 catch (NullReferenceException) //null reference is thrown each time Find() cannot find the element.
@@ -244,29 +244,21 @@ namespace GUILibrary
         /// <param name="searchCondition">search conditions to use in AutomationElement.FindFirst()</param>
         /// <param name="activeParent">the current parent in the recursive search</param>   
         /// <returns>the innermost active AutomationElement that meets the searchConditions.</returns>
-        private static AutomationElement CheckChildren(AutomationElement activeParent,Condition searchConditions)
+        private static AutomationElement CheckChildren(AutomationElement parent,Condition searchConditions)
         {
             AutomationElement searchElement = null;
 
-            try
-            {
-                searchElement = activeParent.FindFirst(TreeScope.Children, searchConditions); //only search in the direct children.
-            }
-            catch (NullReferenceException)
-            {
-            }
+            searchElement = parent.FindFirst(TreeScope.Children, searchConditions); //only search in the direct children.
 
-            //no while loop necessary since the initial parent is loaded the GUI has been fully loaded.
-            if (searchElement != null && (bool) searchElement.GetCurrentPropertyValue(IsEnabledProperty))
+            if (searchElement != null)
             {
-                Debug.WriteLine("A child element matching conditions was found. Doing another recursive search");
-                return CheckChildren(searchElement,searchConditions);
+                return searchElement;
             }
             else
             {
-                Debug.WriteLine("A child element matching conditions was NOT found. Ending recursive search");
-                return activeParent;
+                return parent;
             }
+          
         }
 
         /// <summary>
@@ -277,7 +269,7 @@ namespace GUILibrary
         /// <returns>automation element if successfull</returns>
         private static AutomationElement FindByValue(string selector,double timeout)
         {
-            int firstIndex = selector.IndexOf(":") + 1;  //I ignore all other user input if the user wants to search by value
+            int firstIndex = selector.IndexOf(":=") + 2;  //I ignore all other user input if the user wants to search by value
             string controlValue = selector.Substring(firstIndex, selector.Length - firstIndex); 
 
             Stopwatch searchTime = new Stopwatch();
@@ -295,7 +287,7 @@ namespace GUILibrary
                         {
                             Debug.WriteLine("Found the element using a search by value");
                             searchTime.Stop();
-                            return CheckChildren(autoElement, Automation.ControlViewCondition);
+                            return autoElement;
                         }
                     }
                 }catch (NullReferenceException) { }
@@ -340,10 +332,13 @@ namespace GUILibrary
         public static Dictionary<AutomationProperty, string> ParseSelector(string selector)
         {
             Dictionary<AutomationProperty, string> selectorDict = new Dictionary<AutomationProperty, string>(); //contains selectors with their values
+            string[] separator = { ":=" };
+
             string[] props = selector.Split(',');
             foreach (string prop in props)
             {
-                string[] propWithValues = prop.Split(':'); //split the property with values the user entered on the :
+                //split the property with values the user entered on the :=
+                string[] propWithValues = prop.Split(separator,System.StringSplitOptions.RemoveEmptyEntries); 
 
                 //if we cannot split the string then we assume that the user meant to use the name property
                 if (propWithValues.Length == 1)

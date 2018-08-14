@@ -3,8 +3,12 @@ Library  SimpleGUI
 
 ***Test cases***
 Case 1
-	setWindow  Calculator - Calculator
-	click  Id:num1Button
-	click  id:num2Button
-	click  id:num3Button
-	click  id:num4Button
+	setWindow  SG6801(#1) - S&C IntelliLink Setup Software [611.23]
+	click  Setup
+	click  General
+	click  Fault Detection
+	click  value:=800
+	click  Validate
+	click  value:=Settings Validation Successful
+	click  Apply
+	click  value:=Settings Applied Successfully
