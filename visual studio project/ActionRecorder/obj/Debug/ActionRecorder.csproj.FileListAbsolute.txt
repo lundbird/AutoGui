@@ -1,0 +1,15 @@
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\bin\Debug\ActionRecorder.exe.config
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\bin\Debug\ActionRecorder.exe
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\bin\Debug\ActionRecorder.pdb
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\MainWindow.g.cs
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\App.g.cs
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder_MarkupCompile.cache
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder_MarkupCompile.lref
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\MainWindow.baml
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.g.resources
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.Properties.Resources.resources
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.csproj.GenerateResource.cache
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.csproj.CoreCompileInputs.cache
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.exe
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.pdb
+C:\Users\Alex.Lundberg\SimpleGUI\src\ActionRecorder\obj\Debug\ActionRecorder.csprojAssemblyReference.cache
