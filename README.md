@@ -7,7 +7,7 @@ When you finish recording, robot and python scripts are generated which use the 
 To use this tool to make GUI test cases, use robot and make sure to have the SimpleGUI.py file in the same directory as the robot script.
 
 The full list of available methods in python using the SimpleGUI.dll. All methods are static and void:
-	string Read(string selector, int child = 0, double timeout = 5)
+	string Read(string selector, int child = 0, double timeout = 5) \n
 	setWindow(string window,double timeout=5)
 	Click(string selector, int child = 0,double timeout=5)
 	SendKey(string keys)
