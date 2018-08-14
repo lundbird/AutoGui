@@ -40,3 +40,4 @@ C:\Users\alex\SimpleGUI\src\GUILibrary\bin\Debug\TestApiCore.xml
 C:\Users\alex\SimpleGUI\src\GUILibrary\bin\Debug\TestApiWpf.pdb
 C:\Users\alex\SimpleGUI\src\GUILibrary\bin\Debug\TestApiWpf.xml
 C:\Users\alex\SimpleGUI\src\GUILibrary\obj\Debug\GUILibrary.csproj.CopyComplete
+C:\Users\Alex.Lundberg\SimpleGUI\src\GUILibrary\obj\Debug\GUILibrary.csprojAssemblyReference.cache

@@ -80,7 +80,7 @@ namespace GUILibrary
         /// <summary>
         /// holds the active window for which gui automation actions are performed on
         /// </summary>
-        private static AutomationElement activeWindow { get; set; }
+        public static AutomationElement activeWindow { get; private set; }
 
         /// <summary>
         /// User method that Reads the text from the control of interest
@@ -102,7 +102,7 @@ namespace GUILibrary
         ///<param name="inputText">users inputed text for write methods</param>        
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">users entered timeout </param>    
-        private static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
+        public static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
         {
             if (selector == null)
             {
@@ -230,11 +230,11 @@ namespace GUILibrary
             //in case we couldnt successfully get a value we throw an exception.
             if (searchElement == null)
             {
-                throw new ElementNotAvailableException("Cound not find element: " + selector + " in " + activeWindow + " in " + timeout + " seconds");
+                throw new ElementNotAvailableException("Cound not find element: " + selector  + " in " + timeout + " seconds");
             }
             else
             {
-                throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + activeWindow + " in " + timeout + " seconds");
+                throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
             }
 
         }
@@ -338,7 +338,7 @@ namespace GUILibrary
         /// </summary>
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <returns>Dictionary giving the AutomationProperty with the corresponding value</returns>
-        private static Dictionary<AutomationProperty, string> ParseSelector(string selector)
+        public static Dictionary<AutomationProperty, string> ParseSelector(string selector)
         {
             Dictionary<AutomationProperty, string> selectorDict = new Dictionary<AutomationProperty, string>(); //contains selectors with their values
             string[] props = selector.Split(',');
@@ -354,9 +354,17 @@ namespace GUILibrary
                     return selectorDict;
                 }
 
-                AutomationProperty Automationprop = propertyMap[propWithValues[0]]; //map the string name to the AutomationProperty
-                selectorDict.Add(Automationprop, propWithValues[1]);
-                Debug.WriteLine("Added " + propWithValues[1] + " to property "+ propWithValues[0] + " for search conditions");
+                if (propertyMap.ContainsKey(propWithValues[0])) //make sure the users entered key exists in our dictionary
+                {
+                    AutomationProperty Automationprop = propertyMap[propWithValues[0]]; //map the string name to the AutomationProperty
+                    selectorDict.Add(Automationprop, propWithValues[1]);
+                    Debug.WriteLine("Added " + propWithValues[1] + " to property " + propWithValues[0] + " for search conditions");
+                }
+                else //if not we just skip the property and move on to the next.
+                {
+                    Debug.WriteLine("property: " + propWithValues[0] + " Does not exist in Dictionary. Skipping it");
+                    Console.WriteLine("property: " + propWithValues[0] + " Does not exist in Dictionary. Skipping it");
+                }
             }
             return selectorDict;
         }
@@ -451,67 +459,29 @@ namespace GUILibrary
         ///--------------------------------------------------------------------
         public static void Write(string value, string selector, int child = 0, double timeout=5,string mode="overwrite")
         {
+            ValidateInput(value, selector, child, timeout);
+
             AutomationElement element = Search(selector, child);  //finds the element to write to
 
-            ValidateInput(value, selector, child, timeout);
             if (mode!="overwrite" && mode != "Append")
             {
                 throw new ArgumentException("Invalid argument for write mode. Use mode=overwrite or mode=Append");
             }
 
-                // A series of basic checks prior to attempting an insertion.
-                //
-                // Check #1: Is control enabled?
-                // An alternative to testing for static or read-only controls 
-                // is to filter using 
-                // PropertyCondition(AutomationElement.IsEnabledProperty, true) 
-                // and exclude all read-only text controls from the collection.
-                if (!element.Current.IsEnabled)
-                {
-                    throw new InvalidOperationException(
-                        "The control with an AutomationID of "
-                        + element.Current.AutomationId.ToString()
-                        + " is not enabled.\n\n");
-                }
-
-                // Check #2: Are there styles that prohibit us 
-                //           from sending text to this control?
+                // Are there styles that prohibit us from sending text to this control?
                 if (!element.Current.IsKeyboardFocusable)
                 {
-                    throw new InvalidOperationException(
-                        "The control with an AutomationID of "
-                        + element.Current.AutomationId.ToString()
-                        + "is read-only.\n\n");
+                    throw new InvalidOperationException("The control with an AutomationID of "+ element.Current.AutomationId.ToString()+ "is read-only.\n\n");
                 }
 
-
-                // Once you have an instance of an AutomationElement,  
-                // check if it supports the ValuePattern pattern.
                 object valuePattern = null;
 
-                // Control does not support the ValuePattern pattern 
-                // so use keyboard input to insert content.
-                //
-                // NOTE: Elements that support TextPattern 
-                //       do not support ValuePattern and TextPattern
-                //       does not support setting the text of 
-                //       multi-line edit or document controls.
-                //       For this reason, text input must be simulated
-                //       using one of the following methods.
-                //       
-                if (!element.TryGetCurrentPattern(
-                    ValuePattern.Pattern, out valuePattern))
+                //if the element does not support value pattern or we are in append mode we must change value by sending keys
+                if (!element.TryGetCurrentPattern(ValuePattern.Pattern, out valuePattern) || mode=="Append")
                 {
-                    Debug.WriteLine("The control with an AutomationID of ");
-                    Debug.Write(element.Current.AutomationId.ToString());
-                    Debug.Write(" does not support ValuePattern.");
-                    Debug.Write(" Using keyboard input.\n");
+                    Debug.WriteLine("The control does not support ValuePattern. Using keyboard input.\n");
 
-                    // Set focus for input functionality and begin.
                     element.SetFocus();
-
-                    // Pause before sending keyboard input.
-                    Thread.Sleep(100);
 
                     if (mode == "overwrite")
                     {
@@ -524,19 +494,26 @@ namespace GUILibrary
                     //insert new content.
                     SendKeys.SendWait(value);
                 }
-                // Control supports the ValuePattern pattern so we can 
-                // use the SetValue method to insert content.
+                // Control supports the ValuePattern pattern so we can use the SetValue method to insert content which is faster
                 else
                 {
-                    Debug.WriteLine("The control with an AutomationID of ");
-                    Debug.Write(element.Current.AutomationId.ToString());
-                    Debug.Write((" supports ValuePattern."));
-                    Debug.Write(" Using ValuePattern.SetValue().\n");
+                    Debug.WriteLine("The control with supports ValuePattern. Using ValuePattern.SetValue().\n");
 
-                    // Set focus for input functionality and begin.
                     element.SetFocus();
 
-                    ((ValuePattern)valuePattern).SetValue(value); //sets the value
+                    //despite checking that the element was enabled in Search(), sometimes we get an exception on setting the value
+                    try
+                    {
+                        ((ValuePattern)valuePattern).SetValue(value); //sets the value
+                    }
+                    catch (ElementNotAvailableException)
+                    {
+                        SendKeys.SendWait("^{HOME}");   // Move to start of control
+                        SendKeys.SendWait("^+{END}");   // Select everything
+                        SendKeys.SendWait("{DEL}");     // Delete selection
+                        SendKeys.SendWait(value);
+                    }
+
                 }
         }
     }
