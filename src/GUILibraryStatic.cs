@@ -100,7 +100,7 @@ namespace GUILibrary
         ///<param name="inputText">users inputed text for write methods</param>        
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">users entered timeout </param>    
-        public static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
+        private static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
         {
             if (selector == null)
             {
@@ -337,7 +337,7 @@ namespace GUILibrary
         /// </summary>
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <returns>Dictionary giving the AutomationProperty with the corresponding value</returns>
-        public static Dictionary<AutomationProperty, string> ParseSelector(string selector)
+        private static Dictionary<AutomationProperty, string> ParseSelector(string selector)
         {
             Dictionary<AutomationProperty, string> selectorDict = new Dictionary<AutomationProperty, string>(); //contains selectors with their values
             string[] props = selector.Split(',');
