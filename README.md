@@ -14,7 +14,7 @@ Methods available.
 	Write(string value, string selector, int child = 0, double timeout=5,string mode="overwrite")  
 	
 
-example:
+example:  
 	import autogui as ag  
 	ag.setWindow("Untitled - Notepad")  
 	ag.click("Edit")
