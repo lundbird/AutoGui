@@ -18,4 +18,4 @@ def rightclick(value,id):
 def sendkey(key):
     gl.SendKey(key)
 def read(id):
-    return gl.Read()
+    return gl.Read(id)

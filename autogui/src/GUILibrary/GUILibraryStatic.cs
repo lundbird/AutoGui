@@ -102,13 +102,13 @@ namespace GUILibrary
         /// <param name="timeout">users entered timeout </param>    
         public static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
         {
-            if (selector == null)
+            if (selector == null || selector=="")
             {
-                throw new ArgumentException("selector string cannot be null. Must be in format of property1:value1,property2:value2...");
+                throw new ArgumentException("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
             }
-            if (inputText == null)
+            if (inputText == null || inputText=="")
             {
-                throw new ArgumentException("inputText cannot be null");
+                throw new ArgumentException("inputText cannot be null or empty");
             }
             if (child<0 || child > 100)
             {
