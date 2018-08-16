@@ -1,0 +1,5 @@
+autogui/tools/LOG/
+*.html
+*log.xml
+*recordedActions.py
+*recordedActions.robot
