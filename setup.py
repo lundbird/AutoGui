@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="autogui",
-    version="0.0.2",
+    version="0.0.3",
     author="Alex Lundberg",
     author_email="alex.lundberg@gmail.com",
     description="Records and automates Winform and WPF applications",
@@ -20,12 +20,13 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ),
+    install_requires=['pythonnet'],
     license='MIT',
-    data_files = [(r'Lib\site-packages\autogui\bin',[libpath+'\GUILibrary.dll',
-    libpath+'\GUILibrary.pdb',
-    libpath+'\Interop.UIAutomationClient.dll',
-    libpath+'\TestApiCore.dll',
-    libpath+'\TestApiCore.pdb',
-    libpath+'\TestApiCore.xml',
-    libpath+'\UIAComWrapper.dll',])]
+    data_files = [(r'Lib\site-packages\autogui\bin',[libpath+r'\GUILibrary.dll',
+    libpath+r'\GUILibrary.pdb',
+    libpath+r'\Interop.UIAutomationClient.dll',
+    libpath+r'\TestApiCore.dll',
+    libpath+r'\TestApiCore.pdb',
+    libpath+r'\TestApiCore.xml',
+    libpath+r'\UIAComWrapper.dll',])]
 )

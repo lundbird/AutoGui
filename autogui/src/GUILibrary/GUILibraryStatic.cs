@@ -17,9 +17,10 @@ namespace GUILibrary
     /// </summary>
     public static class GUILibraryClass
     {
-        /// <summary>
-        /// Contains the mappings of user selector strings to AutomationElement Property Conditions 
-        /// </summary>
+        /// <summary>sets the default seconds to timeout if we cant find an element </summary>
+        public const double timeout = 3;
+
+        /// <summary>Contains the mappings of user selector strings to AutomationElement Property Conditions </summary>
         private static Dictionary<string, AutomationProperty> propertyMap = new Dictionary<string, AutomationProperty>(StringComparer.InvariantCultureIgnoreCase)
     {
         {"AutomationId",AutomationIdProperty},
@@ -86,9 +87,9 @@ namespace GUILibrary
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>      
         /// <param name="child">AutomationElement for which to find the text of</param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
-        public static string Read(string selector, int child = 0, double timeout = 5)
+        public static string Read(string selector, int child = 0, double timeout = timeout)
         {
-            ValidateInput(selector, "", child,timeout);
+            ValidateInput(selector, " ", child, timeout);
             AutomationElement control = Search(selector, child);
             return getElementText(control);
         }
@@ -100,21 +101,21 @@ namespace GUILibrary
         ///<param name="inputText">users inputed text for write methods</param>        
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">users entered timeout </param>    
-        public static void ValidateInput(string selector, string inputText, int child=0,double timeout=5)
+        public static void ValidateInput(string selector, string inputText, int child = 0, double timeout = timeout)
         {
-            if (selector == null || selector=="")
+            if (selector == null || selector == "")
             {
                 throw new ArgumentException("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
             }
-            if (inputText == null || inputText=="")
+            if (inputText == null || inputText == "")
             {
                 throw new ArgumentException("inputText cannot be null or empty");
             }
-            if (child<0 || child > 100)
+            if (child < 0 || child > 100)
             {
                 throw new ArgumentException("Invalid child number: " + child);
             }
-            if (timeout<0 || timeout > 30)
+            if (timeout < 0 || timeout > 30)
             {
                 throw new ArgumentException("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
             }
@@ -126,9 +127,9 @@ namespace GUILibrary
         /// <param name="window">selector for the window to perform ui automation actions on</param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
         /// <returns>AutomationElement if succesfull </returns>
-        public static void setWindow(string window,double timeout=5)
+        public static void setWindow(string window, double timeout = timeout)
         {
-            ValidateInput(window,"",0, timeout);
+            ValidateInput(window, " ", 0, timeout);
             activeWindow = RootElement;
             AutomationElement windowElement = Search(window, 0, timeout);
             windowElement.SetFocus();
@@ -144,7 +145,7 @@ namespace GUILibrary
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">time to search for the element before throwing an error</param>
         /// <returns>AutomationElement if succesfull </returns>
-        private static AutomationElement Search(string selector, int child = 0, double timeout=5)
+        private static AutomationElement Search(string selector, int child = 0, double timeout = timeout)
         {
 
             List<Condition> conditionList = new List<Condition>();  //contains the list of conditions that we will search with
@@ -154,11 +155,11 @@ namespace GUILibrary
             if (selector.Contains("value"))
             {
                 Debug.WriteLine("Doing a search by value. Ignoring other conditions in input selector");
-                return FindByValue(selector,timeout);
+                return FindByValue(selector, timeout);
             }
 
             Dictionary<AutomationProperty, string> searchParameters = ParseSelector(selector); //parse users input
-            
+
             //Add all the parameters returned from the parsing into our list of conditions
             foreach (KeyValuePair<AutomationProperty, string> entry in searchParameters)
             {
@@ -195,70 +196,65 @@ namespace GUILibrary
 
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                try         //try a search for the element
+                if (child == 0) //if the user chose to just search for the first element we can use the faster FindFirst rather than FindAll()
                 {
-                    if (child == 0) //if the user chose to just search for the first element we can use the faster FindFirst rather than FindAll()
+                    if (activeWindow == RootElement)  //if the activeWindow hasnt been set yet then we can only search in the children scope or risk stack overflow
                     {
-                        if (activeWindow == RootElement)  //if the activeWindow hasnt been set yet then we can only search in the children scope or risk stack overflow
-                        {
-                            searchElement = activeWindow.FindFirst(TreeScope.Children, searchConditions);
-                        }
-                        else
-                        {
-                            searchElement = activeWindow.FindFirst(TreeScope.Descendants, searchConditions);
-                        }
+                        searchElement = activeWindow.FindFirst(TreeScope.Children, searchConditions);
                     }
                     else
                     {
-                        searchElement = activeWindow.FindAll(TreeScope.Descendants, searchConditions)[child];
-                    }
-
-                    if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
-                    {
-                        Debug.WriteLine("AutomationElement was found");
-                        searchTime.Stop();
-                        return CheckChildren(searchElement,searchConditions);
-                        //return searchElement;
+                        searchElement = activeWindow.FindFirst(TreeScope.Descendants, searchConditions);
                     }
                 }
-                catch (NullReferenceException) //null reference is thrown each time Find() cannot find the element.
+                else
                 {
+                    searchElement = activeWindow.FindAll(TreeScope.Descendants, searchConditions)[child];
                 }
+
+                if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
+                {
+                    Debug.WriteLine("AutomationElement was found");
+                    searchTime.Stop();
+                    if (activeWindow == RootElement)  //avoids bug where a subwindow with the same name is set as active window
+                    {
+                        return searchElement;
+                    }
+                    return CheckChildren(searchElement, searchConditions); //checks if we have an inner element with the same selector
+                }
+
             }
+
             searchTime.Stop();
             //in case we couldnt successfully get a value we throw an exception.
             if (searchElement == null)
             {
-                throw new ElementNotAvailableException("Cound not find element: " + selector  + " in " + timeout + " seconds");
+                throw new NullReferenceException("Cound not find element: " + selector + " in " + timeout + " seconds");
             }
             else
             {
                 throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
             }
-
         }
 
+
+
         /// <summary>
-        /// Finds the innermost active element meeting the conditions of the search using recursion. NOT WORKING.
+        ///Checks if there is an inner element that meets the conditions as often clickable elements are hidden under controls with the same titles.
         /// </summary>
         /// <param name="searchCondition">search conditions to use in AutomationElement.FindFirst()</param>
         /// <param name="activeParent">the current parent in the recursive search</param>   
-        /// <returns>the innermost active AutomationElement that meets the searchConditions.</returns>
-        private static AutomationElement CheckChildren(AutomationElement parent,Condition searchConditions)
+        /// <returns>the child AutomationElement if available and the parent if not.</returns>
+        private static AutomationElement CheckChildren(AutomationElement parent, Condition searchConditions)
         {
             AutomationElement searchElement = null;
-
             searchElement = parent.FindFirst(TreeScope.Children, searchConditions); //only search in the direct children.
-
-            if (searchElement != null)
-            {
-                return searchElement;
-            }
-            else
+            if (searchElement == null)
             {
                 return parent;
             }
-          
+            Debug.WriteLine("A child element was found with the same selector.");
+            return searchElement;
         }
 
         /// <summary>
@@ -267,30 +263,27 @@ namespace GUILibrary
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <param name="timeout">time to search before timing out</param>
         /// <returns>automation element if successfull</returns>
-        private static AutomationElement FindByValue(string selector,double timeout)
+        private static AutomationElement FindByValue(string selector, double timeout)
         {
             int firstIndex = selector.IndexOf(":=") + 2;  //I ignore all other user input if the user wants to search by value
-            string controlValue = selector.Substring(firstIndex, selector.Length - firstIndex); 
+            string controlValue = selector.Substring(firstIndex, selector.Length - firstIndex);
 
             Stopwatch searchTime = new Stopwatch();
             searchTime.Start();
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                try
+                // Use ControlViewCondition to retrieve all control elements then manually search each one.
+                AutomationElementCollection elementCollectionControl = activeWindow.FindAll(TreeScope.Subtree, Automation.ControlViewCondition);
+                foreach (AutomationElement autoElement in elementCollectionControl)
                 {
-                    // Use ControlViewCondition to retrieve all control elements then manually search each one.
-                    AutomationElementCollection elementCollectionControl = activeWindow.FindAll(TreeScope.Subtree, Automation.ControlViewCondition);
-                    foreach (AutomationElement autoElement in elementCollectionControl)
+                    //we have to manually check each element to see if the elements value or text is what we want
+                    if (getElementText(autoElement) == controlValue && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
                     {
-                        //we have to manually check each element to see if the elements value or text is what we want
-                        if (getElementText(autoElement) == controlValue && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty)) 
-                        {
-                            Debug.WriteLine("Found the element using a search by value");
-                            searchTime.Stop();
-                            return autoElement;
-                        }
+                        Debug.WriteLine("Found the element using a search by value");
+                        searchTime.Stop();
+                        return autoElement;
                     }
-                }catch (NullReferenceException) { }
+                }
             }
             //if unsucessfull then throw error
             searchTime.Stop();
@@ -338,7 +331,7 @@ namespace GUILibrary
             foreach (string prop in props)
             {
                 //split the property with values the user entered on the :=
-                string[] propWithValues = prop.Split(separator,System.StringSplitOptions.RemoveEmptyEntries); 
+                string[] propWithValues = prop.Split(separator, System.StringSplitOptions.RemoveEmptyEntries);
 
                 //if we cannot split the string then we assume that the user meant to use the name property
                 if (propWithValues.Length == 1)
@@ -371,11 +364,11 @@ namespace GUILibrary
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">time to search before timing out</param>
         ///--------------------------------------------------
-        public static void Click(string selector, int child = 0,double timeout=5)
+        public static void Click(string selector, int child = 0, double timeout = timeout)
         {
-            ValidateInput(selector,"",child, timeout);
+            ValidateInput(selector, " ", child, timeout);
 
-            AutomationElement control = Search(selector, child,timeout); //get the control of interest
+            AutomationElement control = Search(selector, child, timeout); //get the control of interest
 
             //we check if object is invokable since this is a faster way to click than moving our mouse to the control
             var isInvokable = (bool)control.GetCurrentPropertyValue(IsInvokePatternAvailableProperty);
@@ -414,9 +407,9 @@ namespace GUILibrary
         /// <param name="child">selector to find the text control</param>
         /// <param name="timeout">time to search before timing out</param>
         ///--------------------------------------------------------------------
-        public static void RightClick(string selector,int child=0,double timeout=5)
+        public static void RightClick(string selector, int child = 0, double timeout = timeout)
         {
-            ValidateInput(selector,"",child, timeout);
+            ValidateInput(selector, " ", child, timeout);
 
             AutomationElement control = Search(selector, child, timeout);
 
@@ -436,7 +429,7 @@ namespace GUILibrary
         /// <param name="timeout">time to search before timing out</param>
         /// <param name="mode">whether or not to overwrite the text in the control</param>
         ///--------------------------------------------------------------------
-        public static void Append(string inputText,string selector,int child=0,double timeout=5)
+        public static void Append(string inputText, string selector, int child = 0, double timeout = timeout)
         {
             ValidateInput(selector, inputText, child, timeout);
             Write(inputText, selector, child, timeout, "Append"); //uses the Write method but does not delete the text before insertion
@@ -451,64 +444,63 @@ namespace GUILibrary
         /// <param name="timeout">time to search before timing out</param>
         /// <param name="mode">whether or not to overwrite the text in the control</param>
         ///--------------------------------------------------------------------
-        public static void Write(string value, string selector, int child = 0, double timeout=5,string mode="overwrite")
+        public static void Write(string value, string selector, int child = 0, double timeout = timeout, string mode = "overwrite")
         {
             ValidateInput(value, selector, child, timeout);
 
             AutomationElement element = Search(selector, child);  //finds the element to write to
 
-            if (mode!="overwrite" && mode != "Append")
+            if (mode != "overwrite" && mode != "Append")
             {
                 throw new ArgumentException("Invalid argument for write mode. Use mode=overwrite or mode=Append");
             }
 
-                // Are there styles that prohibit us from sending text to this control?
-                if (!element.Current.IsKeyboardFocusable)
+            // Are there styles that prohibit us from sending text to this control?
+            if (!element.Current.IsKeyboardFocusable)
+            {
+                throw new InvalidOperationException("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
+            }
+
+            object valuePattern = null;
+
+            //if the element does not support value pattern or we are in append mode we must change value by sending keys
+            if (!element.TryGetCurrentPattern(ValuePattern.Pattern, out valuePattern) || mode == "Append")
+            {
+                Debug.WriteLine("The control does not support ValuePattern. Using keyboard input.\n");
+
+                element.SetFocus();
+
+                if (mode == "overwrite")
                 {
-                    throw new InvalidOperationException("The control with an AutomationID of "+ element.Current.AutomationId.ToString()+ "is read-only.\n\n");
+                    //Delete existing content in the control
+                    SendKeys.SendWait("^{HOME}");   // Move to start of control
+                    SendKeys.SendWait("^+{END}");   // Select everything
+                    SendKeys.SendWait("{DEL}");     // Delete selection
                 }
 
-                object valuePattern = null;
+                //insert new content.
+                SendKeys.SendWait(value);
+            }
+            // Control supports the ValuePattern pattern so we can use the SetValue method to insert content which is faster
+            else
+            {
+                Debug.WriteLine("The control with supports ValuePattern. Using ValuePattern.SetValue().\n");
 
-                //if the element does not support value pattern or we are in append mode we must change value by sending keys
-                if (!element.TryGetCurrentPattern(ValuePattern.Pattern, out valuePattern) || mode=="Append")
+                element.SetFocus();
+
+                //despite checking that the element was enabled in Search(), sometimes we get an exception on setting the value
+                try
                 {
-                    Debug.WriteLine("The control does not support ValuePattern. Using keyboard input.\n");
-
-                    element.SetFocus();
-
-                    if (mode == "overwrite")
-                    {
-                        //Delete existing content in the control
-                        SendKeys.SendWait("^{HOME}");   // Move to start of control
-                        SendKeys.SendWait("^+{END}");   // Select everything
-                        SendKeys.SendWait("{DEL}");     // Delete selection
-                    }
-
-                    //insert new content.
+                    ((ValuePattern)valuePattern).SetValue(value); //sets the value
+                }
+                catch (ElementNotAvailableException)
+                {
+                    SendKeys.SendWait("^{HOME}");   // Move to start of control
+                    SendKeys.SendWait("^+{END}");   // Select everything
+                    SendKeys.SendWait("{DEL}");     // Delete selection
                     SendKeys.SendWait(value);
                 }
-                // Control supports the ValuePattern pattern so we can use the SetValue method to insert content which is faster
-                else
-                {
-                    Debug.WriteLine("The control with supports ValuePattern. Using ValuePattern.SetValue().\n");
-
-                    element.SetFocus();
-
-                    //despite checking that the element was enabled in Search(), sometimes we get an exception on setting the value
-                    try
-                    {
-                        ((ValuePattern)valuePattern).SetValue(value); //sets the value
-                    }
-                    catch (ElementNotAvailableException)
-                    {
-                        SendKeys.SendWait("^{HOME}");   // Move to start of control
-                        SendKeys.SendWait("^+{END}");   // Select everything
-                        SendKeys.SendWait("{DEL}");     // Delete selection
-                        SendKeys.SendWait(value);
-                    }
-
-                }
+            }
         }
     }
 }

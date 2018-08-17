@@ -1,0 +1,12 @@
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\GUILibrary.dll
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\GUILibrary.pdb
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\TestApiCore.dll
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\UIAComWrapper.dll
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\Interop.UIAutomationClient.dll
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\TestApiCore.pdb
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\TestApiCore.xml
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csprojAssemblyReference.cache
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csproj.CoreCompileInputs.cache
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csproj.CopyComplete
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.dll
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.pdb
