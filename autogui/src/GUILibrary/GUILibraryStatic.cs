@@ -196,33 +196,36 @@ namespace GUILibrary
 
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                if (child == 0) //if the user chose to just search for the first element we can use the faster FindFirst rather than FindAll()
+                try
                 {
-                    if (activeWindow == RootElement)  //if the activeWindow hasnt been set yet then we can only search in the children scope or risk stack overflow
+                    if (child == 0) //if the user chose to just search for the first element we can use the faster FindFirst rather than FindAll()
                     {
-                        searchElement = activeWindow.FindFirst(TreeScope.Children, searchConditions);
+                        if (activeWindow == RootElement)  //if the activeWindow hasnt been set yet then we can only search in the children scope or risk stack overflow
+                        {
+                            searchElement = activeWindow.FindFirst(TreeScope.Children, searchConditions);
+                        }
+                        else
+                        {
+                            searchElement = activeWindow.FindFirst(TreeScope.Descendants, searchConditions);
+                        }
                     }
                     else
                     {
-                        searchElement = activeWindow.FindFirst(TreeScope.Descendants, searchConditions);
+                        searchElement = activeWindow.FindAll(TreeScope.Descendants, searchConditions)[child];
                     }
-                }
-                else
-                {
-                    searchElement = activeWindow.FindAll(TreeScope.Descendants, searchConditions)[child];
-                }
 
-                if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
-                {
-                    Debug.WriteLine("AutomationElement was found");
-                    searchTime.Stop();
-                    if (activeWindow == RootElement)  //avoids bug where a subwindow with the same name is set as active window
+                    if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
                     {
-                        return searchElement;
+                        Debug.WriteLine("AutomationElement was found");
+                        searchTime.Stop();
+                        if (activeWindow == RootElement)  //avoids bug where a subwindow with the same name is set as active window
+                        {
+                            return searchElement;
+                        }
+                        return CheckChildren(searchElement, searchConditions); //checks if we have an inner element with the same selector
                     }
-                    return CheckChildren(searchElement, searchConditions); //checks if we have an inner element with the same selector
                 }
-
+                catch (ElementNotAvailableException) { }    //sometimes the Find() method throws an elementNotAvailable exception.
             }
 
             searchTime.Stop();

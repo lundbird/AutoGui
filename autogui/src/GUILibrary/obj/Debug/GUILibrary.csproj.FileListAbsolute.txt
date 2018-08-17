@@ -59,3 +59,4 @@ C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Debug\Interop.UIAutoma
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Debug\TestApiCore.pdb
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Debug\TestApiCore.xml
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Debug\GUILibrary.csproj.CopyComplete
+C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Debug\GUILibrary.csprojAssemblyReference.cache

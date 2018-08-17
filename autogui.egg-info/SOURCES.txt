@@ -4,8 +4,8 @@ autogui/__init__.py
 autogui.egg-info/PKG-INFO
 autogui.egg-info/SOURCES.txt
 autogui.egg-info/dependency_links.txt
+autogui.egg-info/requires.txt
 autogui.egg-info/top_level.txt
-autogui/src/__init__.py
 autogui/src/GUILibrary/bin/Release/GUILibrary.dll
 autogui/src/GUILibrary/bin/Release/GUILibrary.pdb
 autogui/src/GUILibrary/bin/Release/Interop.UIAutomationClient.dll
