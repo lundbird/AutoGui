@@ -399,6 +399,7 @@ namespace GUILibrary
         ///--------------------------------------------------
         public static void SendKey(string keys)
         {
+            activeWindow.SetFocus();
             SendKeys.SendWait(keys);
         }
 
