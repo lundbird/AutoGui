@@ -4,7 +4,7 @@ install using pip install autogui
 
 To use, generate scripts using RecorderSpy.exe in tools folder. Use ctrl-r to start recording, ctrl-e to end recording, and ctrl-w to select a GUI element during recording.
 
-Methods available.
+Methods available.  
 	string Read(string selector, int child = 0, double timeout = 5)  
 	setWindow(string window,boolean contains=false,double timeout=5)  
 	Click(string selector, int child = 0,double timeout=5)  
