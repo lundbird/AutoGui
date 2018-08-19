@@ -13,7 +13,7 @@ Methods available.
 	Append(string inputText,string selector,int child=0,double timeout=5)  
 	Write(string value, string selector, int child = 0, double timeout=5,string mode="overwrite")  
 	Open(string app, boolean setActive=true)  
-	Close()  
+	Close(string window="activeWindow")  
 
 example:  
 	from autogui import *  
