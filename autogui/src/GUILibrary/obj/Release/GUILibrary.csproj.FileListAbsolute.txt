@@ -5,7 +5,6 @@ C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\UIAComWrapper.
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\Interop.UIAutomationClient.dll
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\TestApiCore.pdb
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\bin\Release\TestApiCore.xml
-C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csprojAssemblyReference.cache
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csproj.CoreCompileInputs.cache
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csproj.CopyComplete
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.dll

@@ -9,7 +9,6 @@ using Microsoft.Test.Input;
 
 namespace GUILibrary
 {
-    //TODO. Unit testing :(
     /// <summary>
     /// Contains high level user functions for GUI Automation. User inputs what window they want to perform GUI automation using setWindow(selector). 
     /// Then the user can use methods such as Click(selector),Write(text, selector),or Read(selector) to perform actions on control elements
@@ -79,7 +78,7 @@ namespace GUILibrary
         /// <summary>
         /// holds the active window for which gui automation actions are performed on
         /// </summary>
-        public static AutomationElement activeWindow { get; private set; }
+        private static AutomationElement activeWindow; 
 
         /// <summary>
         /// User method that Reads the text from the control of interest
@@ -101,40 +100,134 @@ namespace GUILibrary
         ///<param name="inputText">users inputed text for write methods</param>        
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">users entered timeout </param>    
-        public static void ValidateInput(string selector, string inputText, int child = 0, double timeout = timeout)
+        private static void ValidateInput(string selector, string inputText, int child = 0, double timeout = timeout, Boolean needsWindow = true)
         {
             if (selector == null || selector == "")
             {
-                throw new ArgumentException("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
+                Console.WriteLine("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
+                Environment.Exit(1);
             }
             if (inputText == null || inputText == "")
             {
-                throw new ArgumentException("inputText cannot be null or empty");
+                Console.WriteLine("inputText cannot be null or empty");
+                Environment.Exit(1);
             }
             if (child < 0 || child > 100)
             {
-                throw new ArgumentException("Invalid child number: " + child);
+                Console.WriteLine("Invalid child number: " + child);
+                Environment.Exit(1);
             }
             if (timeout < 0 || timeout > 30)
             {
-                throw new ArgumentException("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
+                Console.WriteLine("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
+                Environment.Exit(1);
+            }
+            if (needsWindow)
+            {
+                if (activeWindow == null)
+                {
+                    Console.WriteLine("No Active Window was selected. Use setWindow to set the window to run on");
+                    Environment.Exit(1);
+                }
+                activeWindow.SetFocus();
             }
         }
 
         /// <summary>
         /// Helper method of Search that calls the AutomationElement.FindFirst or FindAll method which searches the tree for the matching element.
         /// </summary>
-        /// <param name="window">selector for the window to perform ui automation actions on</param>
+        /// <param name="contains">find window based on a partial title match.</param>
+        /// <param name="window">selector for the window to perform ui automation actions on. Slower </param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
         /// <returns>AutomationElement if succesfull </returns>
-        public static void setWindow(string window, double timeout = timeout)
+        public static void setWindow(string window, Boolean contains = false, double timeout = timeout)
         {
-            ValidateInput(window, " ", 0, timeout);
+            ValidateInput(window, " ", 0, timeout, false);
             activeWindow = RootElement;
-            AutomationElement windowElement = Search(window, 0, timeout);
+            AutomationElement windowElement;
+            if (contains)
+            {
+                windowElement = SearchTopWindows(window, timeout);
+            }
+            else
+            {
+                windowElement = Search(window, 0, timeout);
+            }
+
             windowElement.SetFocus();
             activeWindow = windowElement;
             Debug.WriteLine("active window was set to " + window);
+
+        }
+        /// <summary>
+        /// Opens a process
+        /// </summary>
+        /// <param name="app">filepath of the app to launch. Inherits from users PATH variable</param>
+        /// <param name="setActive">optionally choose to set the opened window to the activeWindow. set to false if the function cannot find the window</param>
+        public static void Open(string app,Boolean setActive=true) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
+        {
+            try
+            {
+                Process.Start(app);
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                Console.WriteLine("Could not find an application with location " + app);
+            }
+
+            if (setActive)
+            {
+                //find the name of the app that will most likely be in the title
+                int firstIndex = Math.Max(0, app.LastIndexOf('\\'));
+                int lastIndex = Math.Min(app.Length, app.Length - app.LastIndexOf('.'));
+                string appTitle = app.Substring(firstIndex, lastIndex - firstIndex);
+                Debug.WriteLine("extracted appTitle: " + appTitle);
+
+                setWindow(appTitle, true);
+            }
+        }
+        /// <summary>
+        /// Closes the process that is the active window
+        /// </summary>
+        public static void Close() 
+        {
+            foreach (Process proc in Process.GetProcesses())
+            {
+                if (proc.MainWindowTitle.IndexOf(activeWindow.GetCurrentPropertyValue(NameProperty).ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    Debug.WriteLine("Successfully closed process with title: " + proc.MainWindowTitle);
+                    proc.Kill();
+                    return;
+                }
+            }
+            Debug.WriteLine("Unable to find a process with a title matching the activeWindow to kill");
+        }
+
+        /// <summary>
+        /// finds a match if the window of interest contains a string. Useful if you dont know the full title of the application until runtime
+        /// </summary>
+        /// <param name="window">the partial window title to search for</param>
+        /// <param name="timeout">time to search before timing out</param>
+        /// <returns></returns>
+        private static AutomationElement SearchTopWindows(string window, double timeout=timeout)
+        {
+            Stopwatch searchTime = new Stopwatch();
+            searchTime.Start();
+            while (searchTime.Elapsed.Seconds < timeout)
+            {
+                foreach (Process proc in Process.GetProcesses())
+                {
+                    if (proc.MainWindowTitle.IndexOf(window, StringComparison.OrdinalIgnoreCase)>=0) //checks if input string contained in MainWindowTitle
+                    {                
+                        string searchString = proc.MainWindowTitle.Replace("&", String.Empty);  //title with & removed (specific bug to apps I was working with)
+                        Debug.WriteLine("Found a match on partial name. Now searching with full name: " + searchString);
+                        return Search(@searchString, 0, timeout);
+                    }
+                }
+            }
+            Console.WriteLine("Could not find element with title: " + window);
+            Environment.Exit(1);
+            return null;
         }
 
 
@@ -229,15 +322,19 @@ namespace GUILibrary
             }
 
             searchTime.Stop();
-            //in case we couldnt successfully get a value we throw an exception.
+
+            //in case we couldnt successfully get a value we exit the program.
             if (searchElement == null)
             {
-                throw new NullReferenceException("Cound not find element: " + selector + " in " + timeout + " seconds");
+                Console.WriteLine("Cound not find element: " + selector + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty) + " in " + timeout + " seconds");
+                Environment.Exit(1);
             }
             else
             {
-                throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
+                Console.WriteLine("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
+                Environment.Exit(1);
             }
+            return null;
         }
 
 
@@ -290,7 +387,9 @@ namespace GUILibrary
             }
             //if unsucessfull then throw error
             searchTime.Stop();
-            throw new ElementNotAvailableException("Could not find an element with value: " + controlValue);
+            Console.WriteLine("Could not find an element with value: " + controlValue + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty));
+            Environment.Exit(1);
+            return null;
         }
 
 
@@ -325,7 +424,7 @@ namespace GUILibrary
         /// </summary>
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>
         /// <returns>Dictionary giving the AutomationProperty with the corresponding value</returns>
-        public static Dictionary<AutomationProperty, string> ParseSelector(string selector)
+        private static Dictionary<AutomationProperty, string> ParseSelector(string selector)
         {
             Dictionary<AutomationProperty, string> selectorDict = new Dictionary<AutomationProperty, string>(); //contains selectors with their values
             string[] separator = { ":=" };
@@ -352,8 +451,7 @@ namespace GUILibrary
                 }
                 else //if not we just skip the property and move on to the next.
                 {
-                    Debug.WriteLine("property: " + propWithValues[0] + " Does not exist in Dictionary. Skipping it");
-                    Console.WriteLine("property: " + propWithValues[0] + " Does not exist in Dictionary. Skipping it");
+                    Debug.WriteLine("property: " + propWithValues[0] + " Does not exist in Dictionary. Skipping it");   
                 }
             }
             return selectorDict;
@@ -456,13 +554,15 @@ namespace GUILibrary
 
             if (mode != "overwrite" && mode != "Append")
             {
-                throw new ArgumentException("Invalid argument for write mode. Use mode=overwrite or mode=Append");
+                Console.WriteLine("Invalid argument for write mode. Use mode=overwrite or mode=Append");
+                Environment.Exit(1);
             }
 
             // Are there styles that prohibit us from sending text to this control?
             if (!element.Current.IsKeyboardFocusable)
             {
-                throw new InvalidOperationException("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
+                Console.WriteLine("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
+                Environment.Exit(1);
             }
 
             object valuePattern = null;
