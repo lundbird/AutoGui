@@ -20,10 +20,10 @@ example:
 	open("notepad")  
 	write("My name is Alex Lundberg","Text Editor")  
 	close()  
-	open("calc")
-	click("One")
-	click("Two")
-	close();
+	open("calc")  
+	click("One")  
+	click("Two")  
+	close()  
 	
 	
 	
