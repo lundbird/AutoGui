@@ -168,7 +168,15 @@ namespace GUILibrary
         {
             try
             {
-                Process.Start(app);
+                Process process = new Process();
+                process.StartInfo.FileName = app;
+                process.Start();
+
+                try
+                {
+                    process.WaitForInputIdle();  //wait until the process opens and can accept input
+                }
+                catch (System.InvalidOperationException) { }  //if the app doesnt have a GUI we cant wait for input idle
             }
             catch (System.ComponentModel.Win32Exception)
             {
@@ -189,18 +197,35 @@ namespace GUILibrary
         /// <summary>
         /// Closes the process that is the active window
         /// </summary>
-        public static void Close() 
+        /// <param name="window">select the process to kill by passing its title</param>
+        public static void Close(string window = "activeWindow") 
         {
+            string killProcessTitle;
+            if (window == "activeWindow")
+            {
+                if (activeWindow == null)
+                {
+                    Console.Write("No active application was set to close ");
+                    Environment.Exit(1);
+                }
+
+                killProcessTitle = activeWindow.GetCurrentPropertyValue(NameProperty).ToString(); ;
+            }
+            else
+            {
+                killProcessTitle = window;
+            }
+
             foreach (Process proc in Process.GetProcesses())
             {
-                if (proc.MainWindowTitle.IndexOf(activeWindow.GetCurrentPropertyValue(NameProperty).ToString(), StringComparison.OrdinalIgnoreCase) >= 0)
+                if (proc.MainWindowTitle==killProcessTitle) //must be an exact match for safety.
                 {
                     Debug.WriteLine("Successfully closed process with title: " + proc.MainWindowTitle);
                     proc.Kill();
                     return;
                 }
             }
-            Debug.WriteLine("Unable to find a process with a title matching the activeWindow to kill");
+            Debug.WriteLine("Unable to find a process with a title matching the activeWindow to kill ");
         }
 
         /// <summary>
@@ -295,7 +320,7 @@ namespace GUILibrary
                     {
                         if (activeWindow == RootElement)  //if the activeWindow hasnt been set yet then we can only search in the children scope or risk stack overflow
                         {
-                            searchElement = activeWindow.FindFirst(TreeScope.Children, searchConditions);
+                            searchElement = activeWindow.FindFirst(TreeScope.Descendants, searchConditions);  //set to descendants temporarily for calculator bug
                         }
                         else
                         {
@@ -583,6 +608,7 @@ namespace GUILibrary
                 }
 
                 //insert new content.
+                SendKeys.SendWait("{END}");
                 SendKeys.SendWait(value);
             }
             // Control supports the ValuePattern pattern so we can use the SetValue method to insert content which is faster

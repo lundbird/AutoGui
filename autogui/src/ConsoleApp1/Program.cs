@@ -12,12 +12,20 @@ using static GUILibrary.GUILibraryClass;
     {
         static void Main()
         {
-        Open("calc.exe");
-        //setWindow("calc", true);
-        Click("One");
-        Close();
+
         Open("notepad");
         Write("alex lundberg", "Text Editor");
+        Console.Write(Read("Text Editor"));
+        Append(" is my name ", "Text Editor");
+        //Console.Write(Read("Text Editor"));
+
+        Open("calc");
+        Click("One");
+        Close("Untitled - Notepad");
+        Close();
+        
+        Open("cmd");
+        SendKey("cmd input");
         Close();
         }
 
