@@ -8,28 +8,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using static GUILibrary.GUILibraryClass;
 
-    public class Class1
+public class Class1
+{
+    static void Main()
     {
-        static void Main()
-        {
 
-        Open("notepad");
-        Write("alex lundberg", "Text Editor");
-        Console.Write(Read("Text Editor"));
-        Append(" is my name ", "Text Editor");
-        //Console.Write(Read("Text Editor"));
+        Open(@"C:\Program Files (x86)\S&C Electric\IntelliLink6\IntelliShell.exe", false);
+        setWindow("SC IntelliShell - Select Connection Mode");
 
-        Open("calc");
-        Click("One");
-        Close("Untitled - Notepad");
-        Close();
-        
-        Open("cmd");
-        SendKey("cmd input");
-        Close();
-        }
-
-    } 
+    }
+}
 
     
 

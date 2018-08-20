@@ -166,32 +166,27 @@ namespace GUILibrary
         /// <param name="setActive">optionally choose to set the opened window to the activeWindow. set to false if the function cannot find the window</param>
         public static void Open(string app,Boolean setActive=true) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
         {
+            Process process = new Process();
+            process.StartInfo.FileName = app;
             try
             {
-                Process process = new Process();
-                process.StartInfo.FileName = app;
                 process.Start();
-
-                try
-                {
-                    process.WaitForInputIdle();  //wait until the process opens and can accept input
-                }
-                catch (System.InvalidOperationException) { }  //if the app doesnt have a GUI we cant wait for input idle
             }
-            catch (System.ComponentModel.Win32Exception)
+            catch (System.ComponentModel.Win32Exception)  //cannot find the file
             {
                 Console.WriteLine("Could not find an application with location " + app);
+                Environment.Exit(1);
             }
+
+            try
+            {
+                process.WaitForInputIdle();  //wait until the process opens and can accept input
+            }
+            catch (System.InvalidOperationException) { }  //if the app doesnt have a GUI we cant wait for input idle
 
             if (setActive)
             {
-                //find the name of the app that will most likely be in the title
-                int firstIndex = Math.Max(0, app.LastIndexOf('\\'));
-                int lastIndex = Math.Min(app.Length, app.Length - app.LastIndexOf('.'));
-                string appTitle = app.Substring(firstIndex, lastIndex - firstIndex);
-                Debug.WriteLine("extracted appTitle: " + appTitle);
-
-                setWindow(appTitle, true);
+                setWindow(process.ProcessName,true); //sometimes the original process dies and spawns a new one with a similar title so we do a search with contains.
             }
         }
         /// <summary>
@@ -243,10 +238,9 @@ namespace GUILibrary
                 foreach (Process proc in Process.GetProcesses())
                 {
                     if (proc.MainWindowTitle.IndexOf(window, StringComparison.OrdinalIgnoreCase)>=0) //checks if input string contained in MainWindowTitle
-                    {                
-                        string searchString = proc.MainWindowTitle.Replace("&", String.Empty);  //title with & removed (specific bug to apps I was working with)
-                        Debug.WriteLine("Found a match on partial name. Now searching with full name: " + searchString);
-                        return Search(@searchString, 0, timeout);
+                    {                    
+                        Debug.WriteLine("Found a match on partial name. Now searching with full name: " + proc.MainWindowTitle);
+                        return Search(proc.MainWindowTitle, 0, timeout);
                     }
                 }
             }
@@ -320,7 +314,7 @@ namespace GUILibrary
                     {
                         if (activeWindow == RootElement)  //if the activeWindow hasnt been set yet then we can only search in the children scope or risk stack overflow
                         {
-                            searchElement = activeWindow.FindFirst(TreeScope.Descendants, searchConditions);  //set to descendants temporarily for calculator bug
+                            searchElement = activeWindow.FindFirst(TreeScope.Children, searchConditions);  //set to descendants temporarily for calculator bug
                         }
                         else
                         {
@@ -329,7 +323,13 @@ namespace GUILibrary
                     }
                     else
                     {
-                        searchElement = activeWindow.FindAll(TreeScope.Descendants, searchConditions)[child];
+                        AutomationElementCollection elements = activeWindow.FindAll(TreeScope.Descendants, searchConditions);
+                        if (child > elements.Count)
+                        {
+                            Console.Write("Only " + elements.Count + " elements meeting the conditions exist. You chose to select element: " + child);
+                            Environment.Exit(1);
+                        }
+                        searchElement = elements[child];
                     }
 
                     if (searchElement != null && (bool)searchElement.GetCurrentPropertyValue(IsEnabledProperty)) //if we were successfull and the element is active we return
@@ -342,8 +342,7 @@ namespace GUILibrary
                         }
                         return CheckChildren(searchElement, searchConditions); //checks if we have an inner element with the same selector
                     }
-                }
-                catch (ElementNotAvailableException) { }    //sometimes the Find() method throws an elementNotAvailable exception.
+                }catch (ElementNotAvailableException) { } //sometimes the Find() method throws an elementNotAvailable exception.
             }
 
             searchTime.Stop();
