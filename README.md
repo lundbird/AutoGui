@@ -2,17 +2,16 @@
 
 AutoGui is a GUI Automation/Test tool giving the user high level keywords to automate WPF and winform applications.
 
-## Installing
-
-Install using pip:  
-`pip install autogui`
-
 ## Getting Started
+Install using pip
+`pip install autogui`  
+
 I recommend using a spy tool such RecorderSpy.exe in the tools folder or my RecorderSpy repo. Use ctrl-r to start recording, ctrl-e to end recording, and ctrl-w to select a GUI element during recording. This generates both a python and robot script of your steps.  
 Any other Windows Spy tool, such as Microsofts inspect.exe tool will help out in finding locator properties of elements. Most of the time you can use just the default selector(name/title) to find your element.
 
 
 ### Examples
+Open Calculator, Click a few buttons and close.  
 ```
 from autogui import * 
 open("calc")  
@@ -20,7 +19,7 @@ click("One")
 click("Two")  
 close()  
 ```
-
+Open Notepad, Read and Write some text and close.  
 ```
 from autogui import *  
 open("notepad")  
@@ -31,6 +30,7 @@ print(read("Text Editor"))
 close()  
 ```
 
+Open both notepad and calculator and move between them using setWindow().
 ```
 from autogui import * 
 open("calc")
@@ -44,9 +44,10 @@ click("One",0)  #clicks on the first element that matches title = "One"
 click("One,controltype:=button,id:=num1Button,class=Button")  
 close("Untitled - Notepad")
 close() #closes calculator window
-'''
+```
 
 ### Methods
+```
 click(id,child=0,timeout=timeout)  
 write(value,id,child=0,timeout=timeout)  
 setWindow(id,contains=True,timeout=timeout)  
@@ -57,13 +58,16 @@ read(id,child=0,timeout=gl.timeout)
 open(app,setActive=True)  
 close(window="activeWindow")  
 getActiveWindow()  
+```
 
 ### Selectors
 To select elements, try using any of the following:  
+```
 id  
 name  
 class  
 controltype  
+```
 [Full list of available properties](https://docs.microsoft.com/en-us/dotnet/api/system.windows.automation.automationelement)
 
 ## License
