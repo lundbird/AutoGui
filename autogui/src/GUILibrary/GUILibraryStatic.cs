@@ -17,7 +17,7 @@ namespace GUILibrary
     public static class GUILibraryClass
     {
         /// <summary>sets the default seconds to timeout if we cant find an element </summary>
-        public const double timeout = 3;
+        private const double timeout = 3;
 
         /// <summary>Contains the mappings of user selector strings to AutomationElement Property Conditions </summary>
         private static Dictionary<string, AutomationProperty> propertyMap = new Dictionary<string, AutomationProperty>(StringComparer.InvariantCultureIgnoreCase)
@@ -79,6 +79,19 @@ namespace GUILibrary
         /// holds the active window for which gui automation actions are performed on
         /// </summary>
         private static AutomationElement activeWindow; 
+
+        /// <summary>
+        /// Returns the title of the activeWindow
+        /// </summary>
+        /// <returns></returns>
+        public static string GetActiveWindow()
+        {
+            if (activeWindow == null)
+            {
+                activeWindow = RootElement;
+            }
+            return activeWindow.GetCurrentPropertyValue(NameProperty).ToString();
+        }
 
         /// <summary>
         /// User method that Reads the text from the control of interest

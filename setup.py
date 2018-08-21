@@ -23,10 +23,7 @@ setuptools.setup(
     install_requires=['pythonnet'],
     license='MIT',
     data_files = [(r'Lib\site-packages\autogui\bin',[libpath+r'\GUILibrary.dll',
-    libpath+r'\GUILibrary.pdb',
     libpath+r'\Interop.UIAutomationClient.dll',
     libpath+r'\TestApiCore.dll',
-    libpath+r'\TestApiCore.pdb',
-    libpath+r'\TestApiCore.xml',
     libpath+r'\UIAComWrapper.dll',])]
 )

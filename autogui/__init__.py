@@ -25,4 +25,6 @@ def open(app,setActive=True):
     gl.Open(app,setActive)
 def close(window="activeWindow"):
     gl.Close(window)
+def getActiveWindow():
+    return gl.GetActiveWindow()
     

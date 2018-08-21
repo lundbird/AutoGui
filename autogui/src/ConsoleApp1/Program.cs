@@ -11,9 +11,8 @@ using static GUILibrary.GUILibraryClass;
 public class Class1
 {
     static void Main()
-    { 
-        Open(@"C:\Program Files (x86)\S&C Electric\IntelliLink6\IntelliShell.exe");
-        Click("CANCEL");
+    {
+        Console.Write(GetActiveWindow());
 
     }
 }
