@@ -99,42 +99,34 @@ namespace GUILibrary
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>   
         ///<param name="inputText">users inputed text for write methods</param>        
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
-        /// <param name="timeout">users entered timeout </param>    
+        /// <param name="timeout">users entered timeout </param>  
+        /// <param name="needsWindow">whether or not the action needs a window to operate</param>  
         private static void ValidateInput(string selector, string inputText, int child = 0, double timeout = timeout, Boolean needsWindow = true)
         {
             if (selector == null || selector == "")
             {
                 throw new ArgumentException("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
-                //Console.WriteLine("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
-                //Environment.Exit(1);
             }
             if (inputText == null || inputText == "")
             {
                 throw new ArgumentException("inputText cannot be null or empty");
-                //Console.WriteLine("inputText cannot be null or empty");
-                //Environment.Exit(1);
             }
             if (child < 0 || child > 100)
             {
                 throw new ArgumentException("Invalid child number: " + child);
-                //Console.WriteLine("Invalid child number: " + child);
-                //Environment.Exit(1);
             }
             if (timeout < 0 || timeout > 30)
             {
                 throw new ArgumentException("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
-                //Console.WriteLine("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
-                //Environment.Exit(1);
             }
             if (needsWindow)
             {
                 if (activeWindow == null)
                 {
                     throw new ArgumentException("No Active Window was selected. Use setWindow to set the window to run on");
-                    //Console.WriteLine("No Active Window was selected. Use setWindow to set the window to run on");
-                    //Environment.Exit(1);
                 }
-                activeWindow.SetFocus();
+
+                activeWindow.SetFocus(); //sets the activewindow for users actions
             }
         }
 
@@ -181,8 +173,6 @@ namespace GUILibrary
             catch (System.ComponentModel.Win32Exception)  //cannot find the file
             {
                 throw new ArgumentException("Could not find an application with location " + app);
-                Console.WriteLine("Could not find an application with location " + app);
-                Environment.Exit(1);
             }
 
             try
@@ -208,8 +198,6 @@ namespace GUILibrary
                 if (activeWindow == null)
                 {
                     throw new NullReferenceException("No active application was set to close ");
-                    Console.Write("No active application was set to close ");
-                    Environment.Exit(1);
                 }
 
                 //set the process to kill to be the currently active window
@@ -245,19 +233,20 @@ namespace GUILibrary
             searchTime.Start();
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                foreach (Process proc in Process.GetProcesses())
+                // Use ControlViewCondition to retrieve all control elements then manually search each one.
+                AutomationElementCollection elementCollectionControl = RootElement.FindAll(TreeScope.Children, Automation.ControlViewCondition);
+                foreach (AutomationElement autoElement in elementCollectionControl)
                 {
-                    if (proc.MainWindowTitle.IndexOf(window, StringComparison.OrdinalIgnoreCase)>=0) //checks if input string contained in MainWindowTitle
-                    {                    
-                        Debug.WriteLine("Found a match on partial name. Now searching with full name: " + proc.MainWindowTitle);
-                        return Search(proc.MainWindowTitle, 0, timeout);
+                    //we have to manually check each element to see if the elements value or text is what we want
+                    if (autoElement.GetCurrentPropertyValue(NameProperty).ToString().IndexOf(window,StringComparison.OrdinalIgnoreCase)>=0 && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
+                    {
+                        Debug.WriteLine("Found the element using a search by value");
+                        searchTime.Stop();
+                        return autoElement;
                     }
                 }
             }
             throw new ElementNotAvailableException("Could not find element with title: " + window);
-            Console.WriteLine("Could not find element with title: " + window);
-            Environment.Exit(1);
-            return null;
         }
 
 
@@ -338,8 +327,6 @@ namespace GUILibrary
                         if (child > elements.Count)
                         {
                             throw new IndexOutOfRangeException("Only " + elements.Count + " elements meeting the conditions exist. You chose to select element: " + child);
-                            Console.Write("Only " + elements.Count + " elements meeting the conditions exist. You chose to select element: " + child);
-                            Environment.Exit(1);
                         }
                         searchElement = elements[child];
                     }
@@ -363,16 +350,11 @@ namespace GUILibrary
             if (searchElement == null)
             {
                 throw new ElementNotAvailableException("Cound not find element: " + selector + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty) + " in " + timeout + " seconds");
-                Console.WriteLine("Cound not find element: " + selector + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty) + " in " + timeout + " seconds");
-                Environment.Exit(1);
             }
             else
             {
                 throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
-                Console.WriteLine("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
-                Environment.Exit(1);
             }
-            return null;
         }
 
 
@@ -426,9 +408,6 @@ namespace GUILibrary
             //if unsucessfull then throw error
             searchTime.Stop();
             throw new ElementNotAvailableException("Could not find an element with value: " + controlValue + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty));
-            Console.WriteLine("Could not find an element with value: " + controlValue + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty));
-            Environment.Exit(1);
-            return null;
         }
 
 
@@ -594,16 +573,12 @@ namespace GUILibrary
             if (mode != "overwrite" && mode != "Append")
             {
                 throw new ArgumentException("Invalid argument for write mode. Use mode=overwrite or mode=Append");
-                Console.WriteLine("Invalid argument for write mode. Use mode=overwrite or mode=Append");
-                Environment.Exit(1);
             }
 
             // Are there styles that prohibit us from sending text to this control?
             if (!element.Current.IsKeyboardFocusable)
             {
                 throw new ElementNotEnabledException("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
-                Console.WriteLine("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
-                Environment.Exit(1);
             }
 
             object valuePattern = null;

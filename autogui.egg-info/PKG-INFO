@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: autogui
-Version: 0.0.6
+Version: 0.0.7
 Summary: Records and automates Winform and WPF applications
 Home-page: https://github.com/lundbird/SimpleGUI
 Author: Alex Lundberg
@@ -13,14 +13,14 @@ Description: AutoGui is a GUI Automation/Test tool giving the user high level ke
         To use, generate scripts using RecorderSpy.exe in tools folder. Use ctrl-r to start recording, ctrl-e to end recording, and ctrl-w to select a GUI element during recording.
         
         Methods available.  
-        	string Read(string selector, int child = 0, double timeout = 5)  
-        	setWindow(string window,boolean contains=false,double timeout=5)  
-        	Click(string selector, int child = 0,double timeout=5)  
+        	string Read(string selector, int child = 0, double timeout = 3)  
+        	setWindow(string window,boolean contains=false,double timeout=3)  
+        	Click(string selector, int child = 0,double timeout=3)  
         	SendKey(string keys)  
-        	RightClick(string selector,int child=0,double timeout=5)  
-        	Append(string inputText,string selector,int child=0,double timeout=5)  
-        	Write(string value, string selector, int child = 0, double timeout=5,string mode="overwrite")  
-        	Open(string app, boolean setActive=true)  
+        	RightClick(string selector,int child=0,double timeout=3)  
+        	Append(string inputText,string selector,int child=0,double timeout=3)  
+        	Write(string value, string selector, int child = 0, double timeout=3,string mode="overwrite")  
+        	Open(string app, boolean setActive=false)  
         	Close(string window="activeWindow")  
         
         One can choose to setWindow based on a partial match by setting the contains keyword to true. This can be useful if you don't know the title of your application until runtime.  
