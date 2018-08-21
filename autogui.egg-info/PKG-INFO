@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: autogui
-Version: 0.0.5
+Version: 0.0.6
 Summary: Records and automates Winform and WPF applications
 Home-page: https://github.com/lundbird/SimpleGUI
 Author: Alex Lundberg
@@ -22,6 +22,10 @@ Description: AutoGui is a GUI Automation/Test tool giving the user high level ke
         	Write(string value, string selector, int child = 0, double timeout=5,string mode="overwrite")  
         	Open(string app, boolean setActive=true)  
         	Close(string window="activeWindow")  
+        
+        One can choose to setWindow based on a partial match by setting the contains keyword to true. This can be useful if you don't know the title of your application until runtime.  
+        
+        One can choose to Open and application and set it to the activeWindow. This is by default true, but will fail for certain applications. This is because the initial application will launch a subprocess with a different title. If this fails, just set the flag to false.  
         
         example:  
         	from autogui import *  

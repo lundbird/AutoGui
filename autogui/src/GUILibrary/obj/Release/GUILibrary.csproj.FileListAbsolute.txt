@@ -9,4 +9,3 @@ C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csp
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csproj.CopyComplete
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.dll
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.pdb
-C:\Users\Alex.Lundberg\AutoGui\autogui\src\GUILibrary\obj\Release\GUILibrary.csprojAssemblyReference.cache

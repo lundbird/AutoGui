@@ -21,14 +21,8 @@ def sendkey(key):
     gl.SendKey(key)
 def read(id,child=0,timeout=gl.timeout):
     return gl.Read(id,child,timeout)
-def open(app,setActive=True):
+def open(app,setActive=False):
     gl.Open(app,setActive)
 def close(window="activeWindow"):
     gl.Close(window)
-
-#convenience methods to get and set the default timeout.
-def setTimeout(time):
-    gl.timeout=time
-def getTimeout():
-    return gl.timeout
     

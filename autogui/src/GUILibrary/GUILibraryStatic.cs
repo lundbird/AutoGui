@@ -104,30 +104,35 @@ namespace GUILibrary
         {
             if (selector == null || selector == "")
             {
-                Console.WriteLine("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
-                Environment.Exit(1);
+                throw new ArgumentException("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
+                //Console.WriteLine("selector string cannot be null or empty. Must be in format of property1:=value1,property2:=value2...");
+                //Environment.Exit(1);
             }
             if (inputText == null || inputText == "")
             {
-                Console.WriteLine("inputText cannot be null or empty");
-                Environment.Exit(1);
+                throw new ArgumentException("inputText cannot be null or empty");
+                //Console.WriteLine("inputText cannot be null or empty");
+                //Environment.Exit(1);
             }
             if (child < 0 || child > 100)
             {
-                Console.WriteLine("Invalid child number: " + child);
-                Environment.Exit(1);
+                throw new ArgumentException("Invalid child number: " + child);
+                //Console.WriteLine("Invalid child number: " + child);
+                //Environment.Exit(1);
             }
             if (timeout < 0 || timeout > 30)
             {
-                Console.WriteLine("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
-                Environment.Exit(1);
+                throw new ArgumentException("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
+                //Console.WriteLine("invalid timeout: " + timeout + " is only valid between 0 and 30 seconds");
+                //Environment.Exit(1);
             }
             if (needsWindow)
             {
                 if (activeWindow == null)
                 {
-                    Console.WriteLine("No Active Window was selected. Use setWindow to set the window to run on");
-                    Environment.Exit(1);
+                    throw new ArgumentException("No Active Window was selected. Use setWindow to set the window to run on");
+                    //Console.WriteLine("No Active Window was selected. Use setWindow to set the window to run on");
+                    //Environment.Exit(1);
                 }
                 activeWindow.SetFocus();
             }
@@ -145,7 +150,8 @@ namespace GUILibrary
             ValidateInput(window, " ", 0, timeout, false);
             activeWindow = RootElement;
             AutomationElement windowElement;
-            if (contains)
+
+            if (contains) //do a search on a partial title match
             {
                 windowElement = SearchTopWindows(window, timeout);
             }
@@ -164,7 +170,7 @@ namespace GUILibrary
         /// </summary>
         /// <param name="app">filepath of the app to launch. Inherits from users PATH variable</param>
         /// <param name="setActive">optionally choose to set the opened window to the activeWindow. set to false if the function cannot find the window</param>
-        public static void Open(string app,Boolean setActive=true) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
+        public static void Open(string app,Boolean setActive=false) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
         {
             Process process = new Process();
             process.StartInfo.FileName = app;
@@ -174,6 +180,7 @@ namespace GUILibrary
             }
             catch (System.ComponentModel.Win32Exception)  //cannot find the file
             {
+                throw new ArgumentException("Could not find an application with location " + app);
                 Console.WriteLine("Could not find an application with location " + app);
                 Environment.Exit(1);
             }
@@ -184,7 +191,7 @@ namespace GUILibrary
             }
             catch (System.InvalidOperationException) { }  //if the app doesnt have a GUI we cant wait for input idle
 
-            if (setActive)
+            if (setActive) //if user chose to setActive then we try to find the process that contains the process name
             {
                 setWindow(process.ProcessName,true); //sometimes the original process dies and spawns a new one with a similar title so we do a search with contains.
             }
@@ -200,10 +207,12 @@ namespace GUILibrary
             {
                 if (activeWindow == null)
                 {
+                    throw new NullReferenceException("No active application was set to close ");
                     Console.Write("No active application was set to close ");
                     Environment.Exit(1);
                 }
 
+                //set the process to kill to be the currently active window
                 killProcessTitle = activeWindow.GetCurrentPropertyValue(NameProperty).ToString(); ;
             }
             else
@@ -220,7 +229,8 @@ namespace GUILibrary
                     return;
                 }
             }
-            Debug.WriteLine("Unable to find a process with a title matching the activeWindow to kill ");
+            //if we cannot find the window we do not throw an exception.
+            Console.WriteLine("Unable to find a process with a title " + activeWindow.GetCurrentPropertyValue(NameProperty).ToString() + " to kill ");
         }
 
         /// <summary>
@@ -244,6 +254,7 @@ namespace GUILibrary
                     }
                 }
             }
+            throw new ElementNotAvailableException("Could not find element with title: " + window);
             Console.WriteLine("Could not find element with title: " + window);
             Environment.Exit(1);
             return null;
@@ -326,6 +337,7 @@ namespace GUILibrary
                         AutomationElementCollection elements = activeWindow.FindAll(TreeScope.Descendants, searchConditions);
                         if (child > elements.Count)
                         {
+                            throw new IndexOutOfRangeException("Only " + elements.Count + " elements meeting the conditions exist. You chose to select element: " + child);
                             Console.Write("Only " + elements.Count + " elements meeting the conditions exist. You chose to select element: " + child);
                             Environment.Exit(1);
                         }
@@ -350,11 +362,13 @@ namespace GUILibrary
             //in case we couldnt successfully get a value we exit the program.
             if (searchElement == null)
             {
+                throw new ElementNotAvailableException("Cound not find element: " + selector + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty) + " in " + timeout + " seconds");
                 Console.WriteLine("Cound not find element: " + selector + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty) + " in " + timeout + " seconds");
                 Environment.Exit(1);
             }
             else
             {
+                throw new ElementNotAvailableException("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
                 Console.WriteLine("Element was found but not enabled: " + selector + " in " + timeout + " seconds");
                 Environment.Exit(1);
             }
@@ -411,6 +425,7 @@ namespace GUILibrary
             }
             //if unsucessfull then throw error
             searchTime.Stop();
+            throw new ElementNotAvailableException("Could not find an element with value: " + controlValue + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty));
             Console.WriteLine("Could not find an element with value: " + controlValue + " in window " + activeWindow.GetCurrentPropertyValue(NameProperty));
             Environment.Exit(1);
             return null;
@@ -578,6 +593,7 @@ namespace GUILibrary
 
             if (mode != "overwrite" && mode != "Append")
             {
+                throw new ArgumentException("Invalid argument for write mode. Use mode=overwrite or mode=Append");
                 Console.WriteLine("Invalid argument for write mode. Use mode=overwrite or mode=Append");
                 Environment.Exit(1);
             }
@@ -585,6 +601,7 @@ namespace GUILibrary
             // Are there styles that prohibit us from sending text to this control?
             if (!element.Current.IsKeyboardFocusable)
             {
+                throw new ElementNotEnabledException("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
                 Console.WriteLine("The control with an AutomationID of " + element.Current.AutomationId.ToString() + "is read-only.\n\n");
                 Environment.Exit(1);
             }
