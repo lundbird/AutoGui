@@ -11,21 +11,9 @@ using static GUILibrary.GUILibraryClass;
 public class Class1
 {
     static void Main()
-    {
-        Open("notepad",true);
-
-        Write("My name is Alex Lundberg", "Text Editor");
-
-        Close();
-
-        Open("calc");
-        setWindow("Calculator - Calculator");
-
-        Click("One");
-
-        Click("Two");
-
-        Close();
+    { 
+        Open(@"C:\Program Files (x86)\S&C Electric\IntelliLink6\IntelliShell.exe");
+        Click("CANCEL");
 
     }
 }

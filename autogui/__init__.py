@@ -11,7 +11,7 @@ def click(id,child=0,timeout=gl.timeout):
     gl.Click(id,child,timeout)
 def write(value,id,child=0,timeout=gl.timeout):
     gl.Write(value,id,child,timeout)
-def setWindow(id,contains=False,timeout=gl.timeout):
+def setWindow(id,contains=True,timeout=gl.timeout):
     gl.setWindow(id,contains,timeout)
 def append(value,id,child=0,timeout=gl.timeout):
     gl.Append(value,id,child,timeout)
@@ -21,7 +21,7 @@ def sendkey(key):
     gl.SendKey(key)
 def read(id,child=0,timeout=gl.timeout):
     return gl.Read(id,child,timeout)
-def open(app,setActive=False):
+def open(app,setActive=True):
     gl.Open(app,setActive)
 def close(window="activeWindow"):
     gl.Close(window)

@@ -137,13 +137,13 @@ namespace GUILibrary
         /// <param name="window">selector for the window to perform ui automation actions on. Slower </param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
         /// <returns>AutomationElement if succesfull </returns>
-        public static void setWindow(string window, Boolean contains = false, double timeout = timeout)
+        public static void setWindow(string window, Boolean contains = true, double timeout = timeout)
         {
             ValidateInput(window, " ", 0, timeout, false);
             activeWindow = RootElement;
             AutomationElement windowElement;
 
-            if (contains) //do a search on a partial title match
+            if (contains) //do a search on a partial title match. Slightly Slower but basically just as fast
             {
                 windowElement = SearchTopWindows(window, timeout);
             }
@@ -154,15 +154,16 @@ namespace GUILibrary
 
             windowElement.SetFocus();
             activeWindow = windowElement;
-            Debug.WriteLine("active window was set to " + window);
-
+            Debug.WriteLine("active window was set to " + windowElement.GetCurrentPropertyValue(NameProperty));
         }
+
         /// <summary>
         /// Opens a process
         /// </summary>
         /// <param name="app">filepath of the app to launch. Inherits from users PATH variable</param>
         /// <param name="setActive">optionally choose to set the opened window to the activeWindow. set to false if the function cannot find the window</param>
-        public static void Open(string app,Boolean setActive=false) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
+        /// <param name="timeout">time to search for the active window before timing out</param>
+        public static void Open(string app,Boolean setActive=true,double timeout=timeout) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
         {
             Process process = new Process();
             process.StartInfo.FileName = app;
@@ -183,7 +184,7 @@ namespace GUILibrary
 
             if (setActive) //if user chose to setActive then we try to find the process that contains the process name
             {
-                setWindow(process.ProcessName,true); //sometimes the original process dies and spawns a new one with a similar title so we do a search with contains.
+                setWindow(process.ProcessName,true,timeout); //sometimes the original process dies and spawns a new one with a similar title so we do a search with contains.
             }
         }
         /// <summary>
@@ -237,16 +238,18 @@ namespace GUILibrary
                 AutomationElementCollection elementCollectionControl = RootElement.FindAll(TreeScope.Children, Automation.ControlViewCondition);
                 foreach (AutomationElement autoElement in elementCollectionControl)
                 {
+                    string searchString = autoElement.GetCurrentPropertyValue(NameProperty).ToString();
+
                     //we have to manually check each element to see if the elements value or text is what we want
-                    if (autoElement.GetCurrentPropertyValue(NameProperty).ToString().IndexOf(window,StringComparison.OrdinalIgnoreCase)>=0 && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
+                    if (searchString.IndexOf(window,StringComparison.OrdinalIgnoreCase)>=0 && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
                     {
-                        Debug.WriteLine("Found the element using a search by value");
+                        Debug.WriteLine("Found the title : " + searchString);
                         searchTime.Stop();
                         return autoElement;
                     }
                 }
             }
-            throw new ElementNotAvailableException("Could not find element with title: " + window);
+            throw new ElementNotAvailableException("Could not find element with partial title: " + window);
         }
 
 
@@ -339,6 +342,7 @@ namespace GUILibrary
                         {
                             return searchElement;
                         }
+
                         return CheckChildren(searchElement, searchConditions); //checks if we have an inner element with the same selector
                     }
                 }catch (ElementNotAvailableException) { } //sometimes the Find() method throws an elementNotAvailable exception.
