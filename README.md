@@ -3,11 +3,13 @@
 AutoGui is a GUI Automation/Test tool giving the user high level keywords to automate WPF and winform applications.
 
 ## Getting Started
-Install using pip
+Install using pip  
 `pip install autogui`  
 
 I recommend using a spy tool such RecorderSpy.exe in the tools folder or my RecorderSpy repo. Use ctrl-r to start recording, ctrl-e to end recording, and ctrl-w to select a GUI element during recording. This generates both a python and robot script of your steps.  
-Any other Windows Spy tool, such as Microsofts inspect.exe tool will help out in finding locator properties of elements. Most of the time you can use just the default selector(name/title) to find your element.
+Any other Windows Spy tool, such as Microsofts inspect.exe tool will help out in finding locator properties of elements.  
+
+Most of the time you can use just the default selector(name) to find your element.
 
 
 ### Examples
