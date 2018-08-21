@@ -15,6 +15,10 @@ Methods available.
 	Open(string app, boolean setActive=true)  
 	Close(string window="activeWindow")  
 
+One can choose to setWindow based on a partial match by setting the contains keyword to true. This can be useful if you don't know the title of your application until runtime.  
+
+One can choose to Open and application and set it to the activeWindow. This is by default true, but will fail for certain applications. This is because the initial application will launch a subprocess with a different title. If this fails, just set the flag to false.  
+
 example:  
 	from autogui import *  
 	open("notepad")  
