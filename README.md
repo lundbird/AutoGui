@@ -41,7 +41,7 @@ open("notepad")
 print(getActiveWindow())
 setWindow("calculator")
 print(getActiveWindow())
-click("One",0,4)  #clicks on the first element that matches title = "One". Changes timeout for 4 seconds  
+click("One",0,4)  #clicks on the first element(0) that matches title = "One". Changes timeout to 4 seconds  
 #with selectors other than title you will need to use := with the property value to match
 click("One,controltype:=button,id:=num1Button,class=Button")  
 close("Untitled - Notepad")
@@ -74,7 +74,7 @@ controltype
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License
 
 	
 	
