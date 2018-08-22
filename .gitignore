@@ -3,3 +3,4 @@ autogui/tools/LOG/
 *log.xml
 *recordedActions.py
 *recordedActions.robot
+__pycache__
