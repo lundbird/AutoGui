@@ -19,3 +19,5 @@ C:\Users\Alex.Lundberg\AutoGui\autogui\src\SimpleGuiTester\obj\Release\SimpleGui
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\SimpleGuiTester\obj\Release\SimpleGuiTester.csproj.CopyComplete
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\SimpleGuiTester\obj\Release\SimpleGuiTester.dll
 C:\Users\Alex.Lundberg\AutoGui\autogui\src\SimpleGuiTester\obj\Release\SimpleGuiTester.pdb
+C:\Users\alex\AutoGui\autogui\src\SimpleGuiTester\obj\Release\SimpleGuiTester.csprojAssemblyReference.cache
+C:\Users\alex\AutoGui\autogui\src\SimpleGuiTester\obj\Release\SimpleGuiTester.csproj.CoreCompileInputs.cache

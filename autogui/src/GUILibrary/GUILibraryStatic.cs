@@ -17,7 +17,7 @@ namespace GUILibrary
     public static class GUILibraryClass
     {
         /// <summary>sets the default seconds to timeout if we cant find an element </summary>
-        private const double timeout = 3;
+        public const double timeout = 3;
 
         /// <summary>Contains the mappings of user selector strings to AutomationElement Property Conditions </summary>
         private static Dictionary<string, AutomationProperty> propertyMap = new Dictionary<string, AutomationProperty>(StringComparer.InvariantCultureIgnoreCase)
