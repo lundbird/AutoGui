@@ -28,6 +28,7 @@ Open Notepad, Read and Write some text and close.
 from autogui import *  
 open("notepad")  
 write("My name is Alex Lundberg","Text Editor")
+click("value:=My name is Alex Lundberg")
 sendkey("{ENTER}")
 append(" and this AutoGui","Text Editor")
 print(read("Text Editor"))
@@ -66,9 +67,10 @@ getActiveWindow()
 
 ### Selectors
 To select elements, try using any of the following:  
-```
-id  
+```  
 name  
+id  
+value  
 class  
 controltype  
 ```
