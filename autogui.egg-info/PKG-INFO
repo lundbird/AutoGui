@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: autogui
-Version: 0.0.9
+Version: 0.1.3
 Summary: Records and automates Winform and WPF applications
 Home-page: https://github.com/lundbird/SimpleGUI
 Author: Alex Lundberg
@@ -36,6 +36,7 @@ Description: # AutoGui
         from autogui import *  
         open("notepad")  
         write("My name is Alex Lundberg","Text Editor")
+        click("value:=My name is Alex Lundberg")
         sendkey("{ENTER}")
         append(" and this AutoGui","Text Editor")
         print(read("Text Editor"))
@@ -66,7 +67,7 @@ Description: # AutoGui
         append(value,id,child=0,timeout=timeout)  
         rightclick(id,child=0,timeout=timeout)  
         sendkey(key)  
-        read(id,child=0,timeout=gl.timeout)  
+        read(id,child=0,timeout=timeout)  
         open(app,setActive=True)  
         close(window="activeWindow")  
         getActiveWindow()  
@@ -74,9 +75,10 @@ Description: # AutoGui
         
         ### Selectors
         To select elements, try using any of the following:  
-        ```
-        id  
+        ```  
         name  
+        id  
+        value  
         class  
         controltype  
         ```

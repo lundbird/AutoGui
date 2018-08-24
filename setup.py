@@ -7,14 +7,15 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="autogui",
-    version="0.0.9",
+    version="0.1.3",
     author="Alex Lundberg",
     author_email="alex.lundberg@gmail.com",
     description="Records and automates Winform and WPF applications",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/lundbird/SimpleGUI",
-    packages=setuptools.find_packages(),
+    packages=['autogui'],
+    package_data={'autogui':['src/GUILibrary/bin/Release/*.dll']},
     classifiers=(
         "Programming Language :: Python",
         "License :: OSI Approved :: MIT License",
@@ -22,8 +23,8 @@ setuptools.setup(
     ),
     install_requires=['pythonnet'],
     license='MIT',
-    data_files = [(r'Lib\site-packages\autogui\bin',[libpath+r'\GUILibrary.dll',
-    libpath+r'\Interop.UIAutomationClient.dll',
-    libpath+r'\TestApiCore.dll',
-    libpath+r'\UIAComWrapper.dll',])]
+    #data_files = [(r'Lib\site-packages\autogui\bin',[libpath+r'\GUILibrary.dll',
+    #libpath+r'\Interop.UIAutomationClient.dll',
+    #libpath+r'\TestApiCore.dll',
+    #libpath+r'\UIAComWrapper.dll',])]
 )

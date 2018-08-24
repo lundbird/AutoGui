@@ -2,7 +2,8 @@ import clr
 import os
 import sys
 
-clr.AddReference(sys.prefix + r'\Lib\site-packages\autogui\bin\GUILibrary.dll')
+dir_path = os.path.dirname(os.path.realpath(__file__))
+clr.AddReference(dir_path + r'\src\GUILibrary\bin\Release\GUILibrary.dll')
 from GUILibrary import GUILibraryClass as gl
 
 #these are a complete copy-paste of the method definitions in the dll.

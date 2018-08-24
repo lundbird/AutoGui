@@ -2,7 +2,8 @@ import clr
 import os
 import sys
 
-clr.AddReference(sys.prefix + r'\Lib\site-packages\autogui\bin\GUILibrary.dll')
+dir_path = os.path.dirname(os.path.realpath(__file__))
+clr.AddReference(dir_path + r'\src\GUILibrary\bin\Release\GUILibrary.dll')
 from GUILibrary import GUILibraryClass as gl
 
 #these are a complete copy-paste of the method definitions in the dll.
@@ -11,7 +12,7 @@ def click(id,child=0,timeout=gl.timeout):
     gl.Click(id,child,timeout)
 def write(value,id,child=0,timeout=gl.timeout):
     gl.Write(value,id,child,timeout)
-def setWindow(id,contains=False,timeout=gl.timeout):
+def setWindow(id,contains=True,timeout=gl.timeout):
     gl.setWindow(id,contains,timeout)
 def append(value,id,child=0,timeout=gl.timeout):
     gl.Append(value,id,child,timeout)
@@ -21,8 +22,10 @@ def sendkey(key):
     gl.SendKey(key)
 def read(id,child=0,timeout=gl.timeout):
     return gl.Read(id,child,timeout)
-def open(app,setActive=False):
+def open(app,setActive=True):
     gl.Open(app,setActive)
 def close(window="activeWindow"):
     gl.Close(window)
+def getActiveWindow():
+    return gl.GetActiveWindow()
     
