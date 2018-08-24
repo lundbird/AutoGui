@@ -4,3 +4,4 @@ autogui/tools/LOG/
 *recordedActions.py
 *recordedActions.robot
 __pycache__
+dist
