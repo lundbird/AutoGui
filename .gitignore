@@ -5,3 +5,5 @@ autogui/tools/LOG/
 *recordedActions.robot
 __pycache__
 dist
+build
+autogui.egg-info

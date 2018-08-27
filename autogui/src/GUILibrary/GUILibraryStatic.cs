@@ -247,21 +247,24 @@ namespace GUILibrary
             searchTime.Start();
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                // Use ControlViewCondition to retrieve all control elements then manually search each one.
-                AutomationElementCollection elementCollectionControl = RootElement.FindAll(TreeScope.Children, Automation.ControlViewCondition);
-                foreach (AutomationElement autoElement in elementCollectionControl)
-                {
-                    string searchString = autoElement.GetCurrentPropertyValue(NameProperty).ToString();
-
-                    //we have to manually check each element to see if the elements value or text is what we want
-                    if (searchString.IndexOf(window,StringComparison.OrdinalIgnoreCase)>=0 && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
+                try {
+                    // Use ControlViewCondition to retrieve all control elements then manually search each one.
+                    AutomationElementCollection elementCollectionControl = RootElement.FindAll(TreeScope.Children, Automation.ControlViewCondition);
+                    foreach (AutomationElement autoElement in elementCollectionControl)
                     {
-                        Debug.WriteLine("Found the title : " + searchString);
-                        searchTime.Stop();
-                        return autoElement;
+                        string searchString = autoElement.GetCurrentPropertyValue(NameProperty).ToString();
+
+                        //we have to manually check each element to see if the elements value or text is what we want
+                        if (searchString.IndexOf(window, StringComparison.OrdinalIgnoreCase) >= 0 && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
+                        {
+                            Debug.WriteLine("Found the title : " + searchString);
+                            searchTime.Stop();
+                            return autoElement;
+                        }
                     }
-                }
+                }catch (ElementNotAvailableException) { } //sometimes the Find() method throws an elementNotAvailable exception.
             }
+            searchTime.Stop();
             throw new ElementNotAvailableException("Could not find element with partial title: " + window);
         }
 
@@ -409,18 +412,20 @@ namespace GUILibrary
             searchTime.Start();
             while (searchTime.Elapsed.Seconds < timeout)
             {
-                // Use ControlViewCondition to retrieve all control elements then manually search each one.
-                AutomationElementCollection elementCollectionControl = activeWindow.FindAll(TreeScope.Subtree, Automation.ControlViewCondition);
-                foreach (AutomationElement autoElement in elementCollectionControl)
-                {
-                    //we have to manually check each element to see if the elements value or text is what we want
-                    if (getElementText(autoElement) == controlValue && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
+                try {
+                    // Use ControlViewCondition to retrieve all control elements then manually search each one.
+                    AutomationElementCollection elementCollectionControl = activeWindow.FindAll(TreeScope.Subtree, Automation.ControlViewCondition);
+                    foreach (AutomationElement autoElement in elementCollectionControl)
                     {
-                        Debug.WriteLine("Found the element using a search by value");
-                        searchTime.Stop();
-                        return autoElement;
+                        //we have to manually check each element to see if the elements value or text is what we want
+                        if (getElementText(autoElement) == controlValue && (bool)autoElement.GetCurrentPropertyValue(IsEnabledProperty))
+                        {
+                            Debug.WriteLine("Found the element using a search by value");
+                            searchTime.Stop();
+                            return autoElement;
+                        }
                     }
-                }
+                }catch (ElementNotAvailableException) { } //sometimes the Find() method throws an elementNotAvailable exception.
             }
             //if unsucessfull then throw error
             searchTime.Stop();

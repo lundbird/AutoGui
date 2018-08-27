@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: autogui
-Version: 0.1.3
+Version: 0.1.4
 Summary: Records and automates Winform and WPF applications
 Home-page: https://github.com/lundbird/SimpleGUI
 Author: Alex Lundberg

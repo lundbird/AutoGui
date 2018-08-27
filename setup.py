@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="autogui",
-    version="0.1.3",
+    version="0.1.4",
     author="Alex Lundberg",
     author_email="alex.lundberg@gmail.com",
     description="Records and automates Winform and WPF applications",
@@ -23,8 +23,4 @@ setuptools.setup(
     ),
     install_requires=['pythonnet'],
     license='MIT',
-    #data_files = [(r'Lib\site-packages\autogui\bin',[libpath+r'\GUILibrary.dll',
-    #libpath+r'\Interop.UIAutomationClient.dll',
-    #libpath+r'\TestApiCore.dll',
-    #libpath+r'\UIAComWrapper.dll',])]
 )
