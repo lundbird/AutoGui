@@ -22,7 +22,7 @@ def sendkey(key):
     gl.SendKey(key)
 def read(id,child=0,timeout=gl.timeout):
     return gl.Read(id,child,timeout)
-def open(app,setActive=True):
+def open(app,setActive=True,timeout=gl.timeout):
     gl.Open(app,setActive)
 def close(window="activeWindow"):
     gl.Close(window)

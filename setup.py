@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="autogui",
-    version="0.1.4",
+    version="0.1.5",
     author="Alex Lundberg",
     author_email="alex.lundberg@gmail.com",
     description="Records and automates Winform and WPF applications",
