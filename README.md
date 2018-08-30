@@ -74,6 +74,7 @@ value
 class  
 controltype  
 ```
+properties are fed into the id input of the function in the format: prop1:=propvalue,prop2:=prop2value. The title property does not need to be prefaced.  
 [Full list of available properties](https://docs.microsoft.com/en-us/dotnet/api/system.windows.automation.automationelement)
 
 ## License
