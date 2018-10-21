@@ -7,9 +7,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="autogui",
-    version="0.1.6",
-    author="Alex Lundberg",
-    author_email="alex.lundberg@gmail.com",
+    version="0.1.7",
+    author="Alex Lundberg","Richard Boettcher",
+    author_email="alex.lundberg@gmail.com","richard.boettcher@sandc.com",
     description="Records and automates Winform and WPF applications",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -19,7 +19,7 @@ setuptools.setup(
     classifiers=(
         "Programming Language :: Python",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        "Operating System :: will only function on Winform/WPF applications",
     ),
     install_requires=['pythonnet'],
     license='MIT',
