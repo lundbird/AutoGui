@@ -28,7 +28,7 @@ TODO: Integrate this into a Buildserver and have it auto build the dll, place fi
 
 
 
-Currently SimpleGuiTester and ConsolApp1 are broken, I'm not exactly sure what is going on there, perhaps Alex Lunburg can provide some insight.
+Currently SimpleGuiTester and ConsolApp1 are broken, I'm not exactly sure what is going on there, perhaps Alex Lundbird can provide some insight.
 
 * Configuration
 * Dependencies
