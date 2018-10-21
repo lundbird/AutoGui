@@ -114,7 +114,7 @@ namespace GUILibrary
         /// <param name="child">Allows the user to select which control to use if there are several matching input conditions</param>
         /// <param name="timeout">users entered timeout </param>  
         /// <param name="needsWindow">whether or not the action needs a window to operate</param>  
-        private static void ValidateInput(string selector, string inputText, int child = 0, double timeout = timeout, Boolean needsWindow = true)
+        private static void ValidateInput(string selector, string inputText, int child = 0, double timeout = timeout, bool needsWindow = true)
         {
             if (selector == null || selector == "")
             {
@@ -150,7 +150,7 @@ namespace GUILibrary
         /// <param name="window">selector for the window to perform ui automation actions on. Slower </param>
         /// <param name="timeout">time to search for the element before throwing an error </param>       
         /// <returns>AutomationElement if succesfull </returns>
-        public static void setWindow(string window, Boolean contains = true, double timeout = timeout)
+        public static void setWindow(string window, bool contains = true, double timeout = timeout)
         {
             ValidateInput(window, " ", 0, timeout, false);
             activeWindow = RootElement;
@@ -176,7 +176,7 @@ namespace GUILibrary
         /// <param name="app">filepath of the app to launch. Inherits from users PATH variable</param>
         /// <param name="setActive">optionally choose to set the opened window to the activeWindow. set to false if the function cannot find the window</param>
         /// <param name="timeout">time to search for the active window before timing out</param>
-        public static void Open(string app,Boolean setActive=true,double timeout=timeout) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
+        public static void Open(string app, bool setActive=true,double timeout=timeout) //automically tries to find the activeWindow, if it cant user must call with setActive=False;
         {
             Process process = new Process();
             process.StartInfo.FileName = app;
@@ -523,8 +523,12 @@ namespace GUILibrary
             {
                 //click manually by moving mouse and clicking left mouse button
                 Debug.WriteLine("the automation element was NOT invokable. Manually moving mouse over and clicking");
-                Point p = control.GetClickablePoint();
-                Mouse.MoveTo(p);
+                //Point p = control.GetClickablePoint();
+                //Mouse.MoveTo(p);
+                //Mouse.Click(MouseButton.Left);
+                System.Windows.Point clickablePoint = control.GetClickablePoint();
+                System.Windows.Forms.Cursor.Position =
+                    new System.Drawing.Point((int)clickablePoint.X, (int)clickablePoint.Y);
                 Mouse.Click(MouseButton.Left);
             }
         }
@@ -556,9 +560,13 @@ namespace GUILibrary
             AutomationElement control = Search(selector, child, timeout);
 
             //we cannot invoke on a right click so we move our mouse over and click
-            Point p = control.GetClickablePoint();
-            Mouse.MoveTo(p);
-            Mouse.Click(MouseButton.Right);
+            //Point p = control.GetClickablePoint();
+            //Mouse.MoveTo(p);
+            //Mouse.Click(MouseButton.Right);
+            System.Windows.Point clickablePoint = control.GetClickablePoint();
+            System.Windows.Forms.Cursor.Position =
+                new System.Drawing.Point((int)clickablePoint.X, (int)clickablePoint.Y);
+            Mouse.Click(MouseButton.Left);
         }
 
 
