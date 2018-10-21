@@ -1,5 +1,4 @@
 This file was written by richard.boettcher@sandc.com, let me know if you have any questions I can answer.
-
 ### How do I get set up? ###
 
 This was Built using VS 2017 pro.
@@ -18,9 +17,9 @@ It produces a GUILibrary.dll which is wrapped with a Python pip install for easy
 - UIAComWrapper
 - WindowsBase
 
-- Right Click GUILibrary and Select Build
+Right Click GUILibrary and Select Build
 
-### OUTPUT: ###
+- OUTPUT:
 - 1>------ Build started: Project: GUILibrary, Configuration: Release Any CPU ------
 - 1>  GUILibrary -> C:\GITwork\AutoGui\autogui\src\GUILibrary\bin\Release\GUILibrary.dll
 - ========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
