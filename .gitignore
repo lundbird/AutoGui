@@ -5,7 +5,7 @@ autogui/tools/LOG/
 *recordedActions.robot
 __pycache__
 dist
-build
+#build  #want the dlls here so users can pip install from git repo
 autogui.egg-info
 
 ## Ignore Visual Studio temporary files, build results, and
