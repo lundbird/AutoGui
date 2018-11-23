@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: autogui
-Version: 0.1.7
+Version: 0.1.8
 Summary: Records and automates Winform and WPF applications
 Home-page: https://github.com/lundbird/AutoGui
 Author: Alex Lundberg,Richard Boettcher
@@ -98,4 +98,4 @@ Description: # AutoGui
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: License :: OSI Approved :: MIT License
-Classifier: Operating System :: OS Independent
+Classifier: Operating System :: Microsoft :: Windows

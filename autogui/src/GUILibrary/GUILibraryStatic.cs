@@ -103,7 +103,7 @@ namespace GUILibrary
         public static string GetProperty(string selector, string property, int child = 0, double timeout = timeout)
         {
             ValidateInput(selector, " ", child, timeout);
-            AutomationElement control = Search(selector, child);
+            AutomationElement control = Search(selector, child, timeout);
             if (!propertyMap.ContainsKey(property)) //make sure the users entered key exists in our dictionary
             {
                 throw new ArgumentException("Invalid UI element property: " + property);
@@ -125,7 +125,7 @@ namespace GUILibrary
             ValidateInput(selector, " ", child, timeout);
             try
             {
-                AutomationElement control = Search(selector, child);  // throws exception if doesn't exist.
+                AutomationElement control = Search(selector, child,timeout);  // throws exception if doesn't exist.
             }catch (ElementNotAvailableException)
             {
                 Debug.WriteLine("Element: " + selector + " does not exist in this window");
@@ -143,7 +143,7 @@ namespace GUILibrary
         public static string Read(string selector, int child = 0, double timeout = timeout)
         {
             ValidateInput(selector, " ", child, timeout);
-            AutomationElement control = Search(selector, child);
+            AutomationElement control = Search(selector, child, timeout);
             return getElementText(control);
         }
 
@@ -639,7 +639,7 @@ namespace GUILibrary
         {
             ValidateInput(value, selector, child, timeout);
 
-            AutomationElement element = Search(selector, child);  //finds the element to write to
+            AutomationElement element = Search(selector, child, timeout);  //finds the element to write to
 
             if (mode != "overwrite" && mode != "Append")
             {
