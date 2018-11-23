@@ -5,11 +5,9 @@ VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUILibrary", "GUILibrary\GUILibrary.csproj", "{DAC592EB-95A0-481E-80CB-8082041BA89D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{6F6EC90A-1FAC-4AE4-BDAF-442F8000FDB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runner", "ConsoleApp1\Runner.csproj", "{6F6EC90A-1FAC-4AE4-BDAF-442F8000FDB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleGuiTester", "SimpleGuiTester\SimpleGuiTester.csproj", "{9FF0E3A6-5E9B-45D7-8887-38B8A2422AFC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionRecorder", "ActionRecorder\ActionRecorder.csproj", "{4A3FB6AF-A9A7-46F0-AA29-B4E13A10D104}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "SimpleGuiTester\Tester.csproj", "{9FF0E3A6-5E9B-45D7-8887-38B8A2422AFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{9FF0E3A6-5E9B-45D7-8887-38B8A2422AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FF0E3A6-5E9B-45D7-8887-38B8A2422AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FF0E3A6-5E9B-45D7-8887-38B8A2422AFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A3FB6AF-A9A7-46F0-AA29-B4E13A10D104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A3FB6AF-A9A7-46F0-AA29-B4E13A10D104}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A3FB6AF-A9A7-46F0-AA29-B4E13A10D104}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A3FB6AF-A9A7-46F0-AA29-B4E13A10D104}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

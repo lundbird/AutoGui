@@ -94,6 +94,47 @@ namespace GUILibrary
         }
 
         /// <summary>
+        /// User method that returns the value of the requested property for the given selector
+        /// </summary>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>      
+        /// <param name="property">Automation element property for which to return the info for</param>
+        /// <param name="child">AutomationElement for which to find the text of</param>
+        /// <param name="timeout">time to search for the element before throwing an error </param>  
+        public static string GetProperty(string selector, string property, int child = 0, double timeout = timeout)
+        {
+            ValidateInput(selector, " ", child, timeout);
+            AutomationElement control = Search(selector, child);
+            if (!propertyMap.ContainsKey(property)) //make sure the users entered key exists in our dictionary
+            {
+                throw new ArgumentException("Invalid UI element property: " + property);
+            }
+            AutomationProperty Automationprop = propertyMap[property];
+            Debug.WriteLine("returning " + control.GetCurrentPropertyValue(Automationprop).ToString());
+            return control.GetCurrentPropertyValue(Automationprop).ToString();
+        }
+
+        /// <summary>
+        /// User method that returns True if the element exists. Simple calls Search which throws exception if element not found
+        /// </summary>
+        /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>      
+        /// <param name="property">Automation element property for which to return the info for</param>
+        /// <param name="child">AutomationElement for which to find the text of</param>
+        /// <param name="timeout">time to search for the element before throwing an error </param>
+        public static bool Exists(string selector, int child = 0, double timeout = timeout)
+        {
+            ValidateInput(selector, " ", child, timeout);
+            try
+            {
+                AutomationElement control = Search(selector, child);  // throws exception if doesn't exist.
+            }catch (ElementNotAvailableException)
+            {
+                Debug.WriteLine("Element: " + selector + " does not exist in this window");
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// User method that Reads the text from the control of interest
         /// </summary>
         /// <param name="selector">user input selector string to parse in format property1:value1,property2:value2..</param>      
@@ -566,7 +607,7 @@ namespace GUILibrary
             System.Windows.Point clickablePoint = control.GetClickablePoint();
             System.Windows.Forms.Cursor.Position =
                 new System.Drawing.Point((int)clickablePoint.X, (int)clickablePoint.Y);
-            Mouse.Click(MouseButton.Left);
+            Mouse.Click(MouseButton.Right);
         }
 
 
