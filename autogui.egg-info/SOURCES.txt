@@ -13,3 +13,4 @@ autogui/src/GUILibrary/bin/Release/TestApiCore.dll
 autogui/src/GUILibrary/bin/Release/TestApiCore.pdb
 autogui/src/GUILibrary/bin/Release/TestApiCore.xml
 autogui/src/GUILibrary/bin/Release/UIAComWrapper.dll
+autogui/src/GUILibrary/bin/Release/WindowsBase.dll

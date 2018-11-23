@@ -1,10 +1,10 @@
-Metadata-Version: 2.1
+Metadata-Version: 1.1
 Name: autogui
-Version: 0.1.6
+Version: 0.1.7
 Summary: Records and automates Winform and WPF applications
-Home-page: https://github.com/lundbird/SimpleGUI
-Author: Alex Lundberg
-Author-email: alex.lundberg@gmail.com
+Home-page: https://github.com/lundbird/AutoGui
+Author: Alex Lundberg,Richard Boettcher
+Author-email: alex.lundberg@gmail.com,richard.boettcher@sandc.com
 License: MIT
 Description: # AutoGui
         
@@ -82,6 +82,7 @@ Description: # AutoGui
         class  
         controltype  
         ```
+        properties are fed into the id input of the function in the format: prop1:=propvalue,prop2:=prop2value. The title property does not need to be prefaced.  
         [Full list of available properties](https://docs.microsoft.com/en-us/dotnet/api/system.windows.automation.automationelement)
         
         ## License
@@ -98,4 +99,3 @@ Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
-Description-Content-Type: text/markdown
