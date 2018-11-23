@@ -9,6 +9,10 @@ from GUILibrary import GUILibraryClass as gl
 timeout = 3
 #these are a complete copy-paste of the method definitions in the dll.
 #With IronPthon the dll methods can be used directly: from GUILibrary.GUILibraryClass import *
+def getProperty(id,prop,child=0,timeout=timeout):
+    return gl.GetProperty(id,prop,child,timeout)
+def exists(id,child=0,timeout=timeout):
+    return gl.Exists(id,child,timeout)
 def click(id,child=0,timeout=timeout):
     gl.Click(id,child,timeout)
 def write(value,id,child=0,timeout=timeout):
