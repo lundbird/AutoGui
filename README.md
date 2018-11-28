@@ -3,7 +3,7 @@
 AutoGui is a GUI Automation/Test tool giving the user high level keywords to automate WPF and winform applications. For a getting started walkthrough please read [this medium article](https://medium.com/@lundbird/how-to-automate-windows-applications-with-autogui-626c7b452eed)
 
 ## Getting Started
-Install using pip  
+Install using pip. Your python must be <=3.6 as pythonnet is broken in 3.7
 
 `pip install autogui`  
 
